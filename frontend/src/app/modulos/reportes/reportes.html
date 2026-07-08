@@ -1,0 +1,155 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Reportes</li>
+    </ol>
+</nav>
+
+<div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div>
+        <h2>Reportes</h2>
+        <p>Análisis y estadísticas del negocio</p>
+    </div>
+    <button class="btn btn-primary">
+        <i class="bi bi-download me-1"></i> Descargar Reporte
+    </button>
+</div>
+
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-md-4">
+        <div class="card filter-card">
+            <div class="filter-icon blue"><i class="bi bi-file-earmark-text"></i></div>
+            <div class="filter-body">
+                <label class="filter-label">Tipo de Reporte</label>
+                <select class="filter-select">
+                    <option selected>Ventas</option>
+                    <option>Inventario</option>
+                    <option>Clientes</option>
+                    <option>Proveedores</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card filter-card">
+            <div class="filter-icon green"><i class="bi bi-calendar3"></i></div>
+            <div class="filter-body">
+                <label class="filter-label">Período</label>
+                <select class="filter-select">
+                    <option>Hoy</option>
+                    <option>Esta Semana</option>
+                    <option selected>Este Mes</option>
+                    <option>Este Año</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+        <div class="card filter-card">
+            <div class="filter-icon purple"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="filter-body">
+                <label class="filter-label">Crecimiento</label>
+                <div class="filter-value">+18.5%</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-lg-6">
+        <div class="card chart-card h-100">
+            <h5>Ventas por Categoría</h5>
+            <canvas id="ventasPorCategoriaBarChart" height="230"></canvas>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="card chart-card h-100">
+            <h5>Tendencia de Ventas vs Costos</h5>
+            <canvas id="tendenciaVentasCostosChart" height="230"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="table-card-header">
+        <h5>Productos Más Vendidos</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Posición</th>
+                    <th>Producto</th>
+                    <th>Unidades Vendidas</th>
+                    <th>Ingresos</th>
+                    <th class="text-end">Participación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="rank-badge">1</span></td>
+                    <td>Camisa Polo Azul</td>
+                    <td>145</td>
+                    <td>$43.355</td>
+                    <td>
+                        <div class="share-bar-wrap">
+                            <div class="share-bar"><span style="width: 15.6%;"></span></div>
+                            <span>15.6%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="rank-badge">2</span></td>
+                    <td>Pantalón Jean Negro</td>
+                    <td>98</td>
+                    <td>$58.702</td>
+                    <td>
+                        <div class="share-bar-wrap">
+                            <div class="share-bar"><span style="width: 21.1%;"></span></div>
+                            <span>21.1%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="rank-badge">3</span></td>
+                    <td>Vestido Casual Rojo</td>
+                    <td>76</td>
+                    <td>$60.724</td>
+                    <td>
+                        <div class="share-bar-wrap">
+                            <div class="share-bar"><span style="width: 21.9%;"></span></div>
+                            <span>21.9%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="rank-badge">4</span></td>
+                    <td>Chaqueta Cuero</td>
+                    <td>54</td>
+                    <td>$70.146</td>
+                    <td>
+                        <div class="share-bar-wrap">
+                            <div class="share-bar"><span style="width: 25.3%;"></span></div>
+                            <span>25.3%</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><span class="rank-badge">5</span></td>
+                    <td>Blusa Elegante</td>
+                    <td>112</td>
+                    <td>$44.688</td>
+                    <td>
+                        <div class="share-bar-wrap">
+                            <div class="share-bar"><span style="width: 16.1%;"></span></div>
+                            <span>16.1%</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

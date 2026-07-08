@@ -1,0 +1,79 @@
+ <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Productos</li>
+                    </ol>
+                </nav>
+ 
+                <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div>
+                        <h2>Gestión de Productos</h2>
+                        <p>Administre el inventario de la tienda</p>
+                    </div>
+                    <button class="btn btn-primary">
+                        <i class="bi bi-plus-lg me-1"></i> Agregar Producto
+                    </button>
+                </div> 
+ 
+                <div class="card table-card">
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Camiseta Blanca</td>
+                                    <td>Camisetas</td>
+                                    <td>$45.000</td>
+                                    <td>25</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirmarAccion('¿Desea eliminar este producto?')">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Pantalón Jean Negro 32</td>
+                                    <td>Pantalones</td>
+                                    <td>$90.000</td>
+                                    <td><span class="badge-bajo">5</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirmarAccion('¿Desea eliminar este producto?')">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Vestido Casual Rojo S</td>
+                                    <td>Vestidos</td>
+                                    <td>$120.000</td>
+                                    <td><span class="badge-critico">2</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> Editar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirmarAccion('¿Desea eliminar este producto?')">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>

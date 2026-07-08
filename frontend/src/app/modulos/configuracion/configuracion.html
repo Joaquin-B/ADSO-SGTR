@@ -1,0 +1,140 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Configuración</li>
+    </ol>
+</nav>
+ 
+<div class="page-header">
+    <h2>Configuración</h2>
+    <p>Administre las preferencias y datos generales del sistema</p>
+</div>
+ 
+
+<div class="row g-3">
+ 
+    <div class="col-12 col-lg-7">
+ 
+        <div class="card settings-card mb-3">
+            <h5>Perfil de la Tienda</h5>
+            <p class="settings-desc">Información general que aparece en comprobantes y reportes</p>
+ 
+            <div class="row g-3">
+                <div class="col-12 col-sm-8">
+                    <label>Nombre de la Tienda</label>
+                    <input type="text" class="form-control" value="Tienda de Ropa SGTR">
+                </div>
+                <div class="col-12 col-sm-4">
+                    <label>NIT</label>
+                    <input type="text" class="form-control" value="900.123.456-7">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label>Correo de Contacto</label>
+                    <input type="email" class="form-control" value="contacto@sgtr.com">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label>Teléfono</label>
+                    <input type="text" class="form-control" value="+1 234 567 8900">
+                </div>
+                <div class="col-12 col-sm-8">
+                    <label>Dirección</label>
+                    <input type="text" class="form-control" value="Cra 10 #20-30, Ciudad">
+                </div>
+                <div class="col-12 col-sm-4">
+                    <label>Moneda</label>
+                    <select class="form-select">
+                        <option selected>COP — Peso Colombiano</option>
+                        <option>USD — Dólar</option>
+                        <option>MXN — Peso Mexicano</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+ 
+        <div class="card settings-card mb-3">
+            <h5>Seguridad</h5>
+            <p class="settings-desc">Actualice su contraseña de acceso</p>
+ 
+            <div class="row g-3">
+                <div class="col-12">
+                    <label>Contraseña Actual</label>
+                    <input type="password" class="form-control" placeholder="••••••••">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label>Nueva Contraseña</label>
+                    <input type="password" class="form-control" placeholder="••••••••">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" class="form-control" placeholder="••••••••">
+                </div>
+            </div>
+        </div>
+ 
+    </div>
+ 
+    <div class="col-12 col-lg-5">
+ 
+        <div class="card settings-card mb-3">
+            <h5>Notificaciones</h5>
+            <p class="settings-desc">Elija cuándo quiere recibir avisos del sistema</p>
+ 
+            <div class="settings-row">
+                <div>
+                    <div class="settings-row-label">Alertas de stock bajo</div>
+                    <div class="settings-row-desc">Avisar cuando un producto tenga poco inventario</div>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" checked>
+                </div>
+            </div>
+ 
+            <div class="settings-row">
+                <div>
+                    <div class="settings-row-label">Resumen diario por correo</div>
+                    <div class="settings-row-desc">Recibir un correo con las ventas del día</div>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" checked>
+                </div>
+            </div>
+ 
+            <div class="settings-row">
+                <div>
+                    <div class="settings-row-label">Nuevas órdenes</div>
+                    <div class="settings-row-desc">Notificar cuando se registre una nueva venta</div>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch">
+                </div>
+            </div>
+        </div>
+ 
+        <div class="card settings-card">
+            <h5>Preferencias del Sistema</h5>
+            <p class="settings-desc">Ajustes generales de la aplicación</p>
+ 
+            <div class="mb-3">
+                <label>Idioma</label>
+                <select class="form-select">
+                    <option selected>Español</option>
+                    <option>English</option>
+                </select>
+            </div>
+ 
+            <div class="mb-1">
+                <label>IVA por Defecto (%)</label>
+                <input type="number" class="form-control" value="19">
+            </div>
+        </div>
+ 
+    </div>
+ 
+</div>
+ 
+<div class="d-flex justify-content-end gap-2 mt-3">
+    <button class="btn btn-outline-primary">Cancelar</button>
+    <button class="btn btn-primary" onclick="return confirmarAccion('¿Desea guardar los cambios?')">
+        <i class="bi bi-check2-circle me-1"></i> Guardar Cambios
+    </button>
+</div>
