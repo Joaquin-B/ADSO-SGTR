@@ -37,6 +37,23 @@ class Compra
         return $row;
     }
 
+    public function consultaPorUsuario($id_usuario) {
+    $sql = "SELECT c.*, p.nombre AS nombre_proveedor, u.nombres AS nombre_usuario
+            FROM compras c
+            INNER JOIN proveedores p ON c.id_proveedor = p.id_proveedor
+            INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
+            WHERE c.id_usuario = $id_usuario
+            ORDER BY c.fecha DESC";
+    $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar las compras del usuario');
+
+    $vec = [];
+    while ($row = mysqli_fetch_array($res)) {
+        $vec[] = $row;
+    }
+    return $vec;
+}
+
+
     public function insertar($params)
     {
         // 1. Insertar la cabecera de la compra

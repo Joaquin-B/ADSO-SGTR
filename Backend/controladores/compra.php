@@ -45,6 +45,11 @@ switch ($control) {
         $vec = $compra->obtenerDetalleCompra($id);
         break;
 
+    case 'consultaPorUsuario':
+        $id_usuario = $_GET['id_usuario'];
+        $vec = $compra->consultaPorUsuario($id_usuario);
+        break;
+
     default:
         $vec = ['error' => 'Controlador no valido'];
 }

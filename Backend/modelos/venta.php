@@ -39,7 +39,7 @@ class Venta
 
     public function insertar($params)
     {
-       
+
         $producto = new Producto($this->conexion);
 
         // 1. Validar stock suficiente y calcular el subtotal en el mismo recorrido
