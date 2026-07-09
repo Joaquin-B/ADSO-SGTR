@@ -7,7 +7,7 @@ class Producto {
     }
 
     public function consulta() {
-        $sql = "SELECT p.*, c.nombre AS nombre_categoria, m.nombre AS nombre_marca, pr.nombre AS nombre_proveedor
+        $sql = "SELECT p.*, c.nombre AS categoria, m.nombre AS marca, pr.nombre AS proveedor
                 FROM productos p
                 INNER JOIN categorias c ON p.id_categoria = c.id_categoria
                 INNER JOIN marcas m ON p.id_marca = m.id_marca
@@ -23,7 +23,7 @@ class Producto {
     }
 
     public function buscarPorId($id) {
-        $sql = "SELECT p.*, c.nombre AS nombre_categoria, m.nombre AS nombre_marca, pr.nombre AS nombre_proveedor
+        $sql = "SELECT p.*, c.nombre AS categoria, m.nombre AS marca, pr.nombre AS proveedor
                 FROM productos p
                 INNER JOIN categorias c ON p.id_categoria = c.id_categoria
                 INNER JOIN marcas m ON p.id_marca = m.id_marca
@@ -103,7 +103,7 @@ class Producto {
     }
 
     public function productosStockBajo($limite = 10) {
-        $sql = "SELECT p.*, c.nombre AS nombre_categoria, m.nombre AS nombre_marca
+        $sql = "SELECT p.*, c.nombre AS categoria, m.nombre AS marca
                 FROM productos p
                 INNER JOIN categorias c ON p.id_categoria = c.id_categoria
                 INNER JOIN marcas m ON p.id_marca = m.id_marca

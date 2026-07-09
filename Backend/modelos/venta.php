@@ -120,4 +120,62 @@ class Venta
         $detalleVenta = new DetalleVenta($this->conexion);
         return $detalleVenta->consultaPorVenta($id_venta);
     }
+
+    public function ventasPorCategoria()
+    {
+        $sql = "SELECT c.nombre AS categoria, SUM(dv.subtotal) AS total
+            FROM detalle_venta dv
+            INNER JOIN productos p ON dv.id_producto = p.id_producto
+            INNER JOIN categorias c ON p.id_categoria = c.id_categoria
+            INNER JOIN ventas v ON dv.id_venta = v.id_venta
+            WHERE v.estado = 'Completada'
+            GROUP BY c.nombre
+            ORDER BY total DESC";
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar las ventas por categoria');
+
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
+    }
+
+    public function productosMasVendidos($limite = 5)
+    {
+        $sql = "SELECT p.nombre, SUM(dv.cantidad) AS unidades, SUM(dv.subtotal) AS ingresos
+            FROM detalle_venta dv
+            INNER JOIN productos p ON dv.id_producto = p.id_producto
+            INNER JOIN ventas v ON dv.id_venta = v.id_venta
+            WHERE v.estado = 'Completada'
+            GROUP BY p.nombre
+            ORDER BY ingresos DESC
+            LIMIT $limite";
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar los productos mas vendidos');
+
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
+    }
+
+    public function tendenciaVentasCostos()
+    {
+        $sql = "SELECT DATE_FORMAT(v.fecha, '%Y-%m') AS mes,
+                   SUM(dv.subtotal) AS ventas,
+                   SUM(dv.cantidad * p.precio_compra) AS costos
+            FROM detalle_venta dv
+            INNER JOIN productos p ON dv.id_producto = p.id_producto
+            INNER JOIN ventas v ON dv.id_venta = v.id_venta
+            WHERE v.estado = 'Completada'
+            GROUP BY mes
+            ORDER BY mes ASC";
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar la tendencia de ventas y costos');
+
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
+    }
 }

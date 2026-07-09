@@ -44,7 +44,17 @@ switch ($control) {
         $id = $_GET['id'];
         $vec = $venta->obtenerDetalleVenta($id);
         break;
+    case 'ventasPorCategoria':
+        $vec = $venta->ventasPorCategoria();
+        break;
+    case 'productosMasVendidos':
+        $limite = isset($_GET['limite']) ? $_GET['limite'] : 5;
+        $vec = $venta->productosMasVendidos($limite);
+        break;
 
+    case 'tendenciaVentasCostos':
+        $vec = $venta->tendenciaVentasCostos();
+        break;
     default:
         $vec = ['error' => 'Controlador no valido'];
 }
