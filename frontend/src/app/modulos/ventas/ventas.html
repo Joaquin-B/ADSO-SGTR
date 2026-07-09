@@ -1,10 +1,10 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Home</a></li>
         <li class="breadcrumb-item active">Ventas</li>
     </ol>
 </nav>
- 
+
 <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div>
         <h2>Gestión de Ventas</h2>
@@ -14,7 +14,6 @@
         <i class="bi bi-plus-lg me-1"></i> Nueva Venta
     </button>
 </div>
- 
 
 <div class="row g-3 mb-3">
     <div class="col-12 col-sm-6 col-xl-3">
@@ -27,7 +26,7 @@
             <div class="kpi-delta">12 transacciones</div>
         </div>
     </div>
- 
+
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card kpi-card">
             <div class="kpi-top">
@@ -38,7 +37,7 @@
             <div class="kpi-delta"><span class="up">↑ 12%</span> vs mes anterior</div>
         </div>
     </div>
- 
+
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card kpi-card">
             <div class="kpi-top">
@@ -49,7 +48,7 @@
             <div class="kpi-delta">por venta</div>
         </div>
     </div>
- 
+
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card kpi-card">
             <div class="kpi-top">
@@ -61,7 +60,7 @@
         </div>
     </div>
 </div>
- 
+
 <div class="card table-card">
     <div class="table-card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h5>Historial de Ventas</h5>
@@ -72,13 +71,12 @@
             </div>
             <select class="form-select form-select-sm" style="width:150px;">
                 <option selected>Todos los estados</option>
-                <option>Pagada</option>
-                <option>Pendiente</option>
+                <option>Completada</option>
                 <option>Cancelada</option>
             </select>
         </div>
     </div>
- 
+
     <div class="table-responsive">
         <table class="table mb-0">
             <thead>
@@ -93,49 +91,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>#VT-1042</td>
-                    <td>Ana Martínez</td>
-                    <td>María García</td>
-                    <td>2024-06-28</td>
-                    <td>$135.000</td>
-                    <td><span class="badge-pill soft-success">Pagada</span></td>
+                <tr *ngFor="let item of venta">
+                    <td>{{ item.numero_venta }}</td>
+                    <td>{{ item.nombre_cliente }}</td>
+                    <td>{{ item.nombre_usuario }}</td>
+                    <td>{{ item.fecha | date:'yyyy-MM-dd' }}</td>
+                    <td>{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-printer"></i></button>
+                        <span class="badge-pill soft-success" *ngIf="item.estado === 'Completada'">Completada</span>
+                        <span class="badge-pill soft-danger" *ngIf="item.estado === 'Cancelada'">Cancelada</span>
                     </td>
-                </tr>
-                <tr>
-                    <td>#VT-1041</td>
-                    <td>Cliente Mostrador</td>
-                    <td>Carlos López</td>
-                    <td>2024-06-28</td>
-                    <td>$90.000</td>
-                    <td><span class="badge-pill soft-success">Pagada</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-printer"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#VT-1040</td>
-                    <td>Pedro Sánchez</td>
-                    <td>María García</td>
-                    <td>2024-06-27</td>
-                    <td>$210.000</td>
-                    <td><span class="badge-pill soft-warning">Pendiente</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-printer"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#VT-1039</td>
-                    <td>Laura Gómez</td>
-                    <td>Carlos López</td>
-                    <td>2024-06-27</td>
-                    <td>$58.000</td>
-                    <td><span class="badge-pill soft-danger">Cancelada</span></td>
                     <td>
                         <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
                         <button class="btn btn-sm btn-outline-primary"><i class="bi bi-printer"></i></button>

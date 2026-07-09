@@ -1,10 +1,10 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Home</a></li>
         <li class="breadcrumb-item active">Usuarios</li>
     </ol>
 </nav>
- 
+
 <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div>
         <h2>Gestión de Usuarios</h2>
@@ -15,20 +15,21 @@
     </button>
 </div>
 
- 
+
 <div class="card mb-3" style="padding: 14px 16px;">
     <div class="search-bar">
         <i class="bi bi-search"></i>
         <input type="text" class="form-control" placeholder="Buscar usuarios...">
     </div>
 </div>
- 
+
 <div class="card table-card">
     <div class="table-responsive">
         <table class="table mb-0">
             <thead>
                 <tr>
-                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
                     <th>Rol</th>
                     <th>Estado</th>
                     <th>Fecha Registro</th>
@@ -36,103 +37,15 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr *ngFor="let item of usuario">
+                    <td>{{item.nombres}}</td>
+                    <td>{{item.apellidos}}</td>
+                    <td>{{item.rol}}</td>
                     <td>
-                        <div class="user-cell">
-                            <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                            <div>
-                                <div class="user-name">Juan Pérez</div>
-                                <div class="user-email">juan@sgtr.com</div>
-                            </div>
-                        </div>
+                        <span class="badge-pill soft-success" *ngIf="item.estado == 1">Activo</span>
+                        <span class="badge-pill soft-danger" *ngIf="item.estado == 0">Inactivo</span>
                     </td>
-                    <td><span class="badge-pill solid-primary">Administrador</span></td>
-                    <td><span class="badge-pill solid-primary">Activo</span></td>
-                    <td>2024-01-15</td>
-                    <td>
-                        <button class="icon-btn"><i class="bi bi-pencil"></i></button>
-                        <button class="icon-btn danger"
-                            onclick="return confirmarAccion('¿Desea eliminar este usuario?')">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="user-cell">
-                            <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                            <div>
-                                <div class="user-name">María García</div>
-                                <div class="user-email">maria@sgtr.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="badge-pill soft-success">Vendedor</span></td>
-                    <td><span class="badge-pill solid-primary">Activo</span></td>
-                    <td>2024-02-20</td>
-                    <td>
-                        <button class="icon-btn"><i class="bi bi-pencil"></i></button>
-                        <button class="icon-btn danger"
-                            onclick="return confirmarAccion('¿Desea eliminar este usuario?')">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="user-cell">
-                            <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                            <div>
-                                <div class="user-name">Carlos López</div>
-                                <div class="user-email">carlos@sgtr.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="badge-pill soft-success">Vendedor</span></td>
-                    <td><span class="badge-pill solid-primary">Activo</span></td>
-                    <td>2024-03-10</td>
-                    <td>
-                        <button class="icon-btn"><i class="bi bi-pencil"></i></button>
-                        <button class="icon-btn danger"
-                            onclick="return confirmarAccion('¿Desea eliminar este usuario?')">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="user-cell">
-                            <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                            <div>
-                                <div class="user-name">Ana Martínez</div>
-                                <div class="user-email">ana@email.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="badge-pill soft-muted">Cliente</span></td>
-                    <td><span class="badge-pill solid-primary">Activo</span></td>
-                    <td>2024-04-05</td>
-                    <td>
-                        <button class="icon-btn"><i class="bi bi-pencil"></i></button>
-                        <button class="icon-btn danger"
-                            onclick="return confirmarAccion('¿Desea eliminar este usuario?')">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="user-cell">
-                            <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
-                            <div>
-                                <div class="user-name">Pedro Sánchez</div>
-                                <div class="user-email">pedro@sgtr.com</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="badge-pill soft-success">Vendedor</span></td>
-                    <td><span class="badge-pill solid-muted">Inactivo</span></td>
-                    <td>2023-12-01</td>
+                    <td>{{item.fecha_registro}}</td>
                     <td>
                         <button class="icon-btn"><i class="bi bi-pencil"></i></button>
                         <button class="icon-btn danger"

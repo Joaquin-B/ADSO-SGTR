@@ -1,10 +1,10 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Home</a></li>
         <li class="breadcrumb-item active">Clientes</li>
     </ol>
 </nav>
- 
+
 <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div>
         <h2>Gestión de Clientes</h2>
@@ -14,7 +14,6 @@
         <i class="bi bi-plus-lg me-1"></i> Nuevo Cliente
     </button>
 </div>
- 
 
 <div class="card mb-3" style="padding: 14px 16px;">
     <div class="search-bar">
@@ -22,25 +21,22 @@
         <input type="text" class="form-control" placeholder="Buscar clientes...">
     </div>
 </div>
- 
+
 <div class="row g-3">
- 
-    <div class="col-12 col-md-6 col-xl-4">
+
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let item of cliente">
         <div class="card info-card">
             <div class="info-card-header">
                 <div class="info-card-avatar"><i class="bi bi-person-fill"></i></div>
                 <div>
-                    <div class="info-card-name">Ana Martínez</div>
-                    <div class="info-card-sub">Cliente desde 2024-04-05</div>
+                    <div class="info-card-name">{{ item.nombre }}</div>
+                    <div class="info-card-sub">Cliente desde {{ item.fecha_registro | date:'yyyy-MM-dd' }}</div>
                 </div>
             </div>
-            <div class="info-card-detail"><i class="bi bi-envelope"></i> ana@email.com</div>
-            <div class="info-card-detail"><i class="bi bi-telephone"></i> +1 234 567 8910</div>
-            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> Cra 45 #12-30, Ciudad</div>
-            <div class="info-card-tags">
-                <span class="info-card-tag">8 compras</span>
-                <span class="info-card-tag">Cliente frecuente</span>
-            </div>
+            <div class="info-card-detail"><i class="bi bi-envelope"></i> {{ item.email }}</div>
+            <div class="info-card-detail"><i class="bi bi-telephone"></i> {{ item.telefono }}</div>
+            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> {{ item.direccion }}, {{ item.ciudad }}</div>
+          
             <div class="info-card-actions">
                 <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
                 <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
@@ -50,56 +46,5 @@
             </div>
         </div>
     </div>
- 
-    <div class="col-12 col-md-6 col-xl-4">
-        <div class="card info-card">
-            <div class="info-card-header">
-                <div class="info-card-avatar"><i class="bi bi-person-fill"></i></div>
-                <div>
-                    <div class="info-card-name">Pedro Sánchez</div>
-                    <div class="info-card-sub">Cliente desde 2023-12-01</div>
-                </div>
-            </div>
-            <div class="info-card-detail"><i class="bi bi-envelope"></i> pedro@email.com</div>
-            <div class="info-card-detail"><i class="bi bi-telephone"></i> +1 234 567 8911</div>
-            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> Calle 10 #8-22, Ciudad</div>
-            <div class="info-card-tags">
-                <span class="info-card-tag">3 compras</span>
-            </div>
-            <div class="info-card-actions">
-                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
-                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
-                    onclick="return confirmarAccion('¿Desea eliminar este cliente?')">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
- 
-    <div class="col-12 col-md-6 col-xl-4">
-        <div class="card info-card">
-            <div class="info-card-header">
-                <div class="info-card-avatar"><i class="bi bi-person-fill"></i></div>
-                <div>
-                    <div class="info-card-name">Laura Gómez</div>
-                    <div class="info-card-sub">Cliente desde 2024-02-14</div>
-                </div>
-            </div>
-            <div class="info-card-detail"><i class="bi bi-envelope"></i> laura@email.com</div>
-            <div class="info-card-detail"><i class="bi bi-telephone"></i> +1 234 567 8912</div>
-            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> Av. Siempre Viva 742, Ciudad</div>
-            <div class="info-card-tags">
-                <span class="info-card-tag">15 compras</span>
-                <span class="info-card-tag">Cliente VIP</span>
-            </div>
-            <div class="info-card-actions">
-                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
-                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
-                    onclick="return confirmarAccion('¿Desea eliminar este cliente?')">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
- 
+
 </div>

@@ -1,10 +1,10 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Home</a></li>
         <li class="breadcrumb-item active">Proveedores</li>
     </ol>
 </nav>
- 
+
 <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div>
         <h2>Gestión de Proveedores</h2>
@@ -21,25 +21,21 @@
         <input type="text" class="form-control" placeholder="Buscar proveedores...">
     </div>
 </div>
- 
+
 <div class="row g-3">
- 
-    <div class="col-12 col-md-6 col-xl-4">
+
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let item of proveedor">
         <div class="card info-card">
             <div class="info-card-header">
                 <div class="info-card-avatar"><i class="bi bi-truck"></i></div>
                 <div>
-                    <div class="info-card-name">Textiles del Norte S.A.</div>
-                    <div class="info-card-sub">Roberto Méndez</div>
+                    <div class="info-card-name">{{ item.nombre }}</div>
+                    <div class="info-card-sub">NIT: {{ item.nit }}</div>
                 </div>
             </div>
-            <div class="info-card-detail"><i class="bi bi-envelope"></i> contacto@texnorte.com</div>
-            <div class="info-card-detail"><i class="bi bi-telephone"></i> +1 234 567 8900</div>
-            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> Av. Industrial 123, Ciudad</div>
-            <div class="info-card-tags">
-                <span class="info-card-tag blue">Camisas</span>
-                <span class="info-card-tag blue">Pantalones</span>
-            </div>
+            <div class="info-card-detail"><i class="bi bi-envelope"></i> {{ item.email }}</div>
+            <div class="info-card-detail"><i class="bi bi-telephone"></i> {{ item.telefono }}</div>
+            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> {{ item.direccion }}, {{ item.ciudad }}</div>
             <div class="info-card-actions">
                 <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
                 <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
@@ -49,57 +45,5 @@
             </div>
         </div>
     </div>
- 
-    <div class="col-12 col-md-6 col-xl-4">
-        <div class="card info-card">
-            <div class="info-card-header">
-                <div class="info-card-avatar"><i class="bi bi-truck"></i></div>
-                <div>
-                    <div class="info-card-name">Confecciones Premium</div>
-                    <div class="info-card-sub">Laura Torres</div>
-                </div>
-            </div>
-            <div class="info-card-detail"><i class="bi bi-envelope"></i> ventas@confpremium.com</div>
-            <div class="info-card-detail"><i class="bi bi-telephone"></i> +1 234 567 8901</div>
-            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> Calle Comercio 456, Ciudad</div>
-            <div class="info-card-tags">
-                <span class="info-card-tag blue">Vestidos</span>
-                <span class="info-card-tag blue">Blusas</span>
-            </div>
-            <div class="info-card-actions">
-                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
-                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
-                    onclick="return confirmarAccion('¿Desea eliminar este proveedor?')">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
- 
-    <div class="col-12 col-md-6 col-xl-4">
-        <div class="card info-card">
-            <div class="info-card-header">
-                <div class="info-card-avatar"><i class="bi bi-truck"></i></div>
-                <div>
-                    <div class="info-card-name">Distribuidora Fashion</div>
-                    <div class="info-card-sub">Miguel Ángel Castro</div>
-                </div>
-            </div>
-            <div class="info-card-detail"><i class="bi bi-envelope"></i> info@fashiondist.com</div>
-            <div class="info-card-detail"><i class="bi bi-telephone"></i> +1 234 567 8902</div>
-            <div class="info-card-detail"><i class="bi bi-geo-alt"></i> Zona Industrial 789, Ciudad</div>
-            <div class="info-card-tags">
-                <span class="info-card-tag blue">Chaquetas</span>
-                <span class="info-card-tag blue">Accesorios</span>
-            </div>
-            <div class="info-card-actions">
-                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
-                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
-                    onclick="return confirmarAccion('¿Desea eliminar este proveedor?')">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
- 
+
 </div>

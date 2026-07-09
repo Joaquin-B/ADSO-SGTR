@@ -33,6 +33,14 @@ export class Venta {
   obtenerDetalleVenta(id: number) {
     return this.http.get(`${this.url}?control=obtenerDetalleVenta&id=${id}`);
   }
+  productosMasVendidos(limite: number = 5) {
+    return this.http.get(`${this.url}?control=productosMasVendidos&limite=${limite}`);
+  }
 
-
+  tendenciaVentasCostos() {
+    return this.http.get(`${this.url}?control=tendenciaVentasCostos`);
+  }
+  ventasPorCategoria() {
+    return this.http.get(`${this.url}?control=ventasPorCategoria`);
+  }
 }

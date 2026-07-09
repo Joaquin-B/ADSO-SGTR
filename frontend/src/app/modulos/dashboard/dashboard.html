@@ -1,113 +1,97 @@
- <div class="page-header">
-                    <h2>Dashboard</h2>
-                    <p>Resumen general del sistema</p>
-                </div>
- 
-                
-                <div class="row g-3 mb-3">
-                    <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="card kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Ventas del Mes</span>
-                                <div class="kpi-icon money"><i class="bi bi-currency-dollar"></i></div>
-                            </div>
-                            <div class="kpi-value">$67,000</div>
-                            <div class="kpi-delta"><span class="up">↑ 12%</span> vs mes anterior</div>
-                        </div>
-                    </div>
- 
-                    <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="card kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Productos en Stock</span>
-                                <div class="kpi-icon stock"><i class="bi bi-box-seam"></i></div>
-                            </div>
-                            <div class="kpi-value">1,245</div>
-                            <div class="kpi-delta">158 categorías diferentes</div>
-                        </div>
-                    </div>
- 
-                    <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="card kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Clientes Registrados</span>
-                                <div class="kpi-icon users"><i class="bi bi-people-fill"></i></div>
-                            </div>
-                            <div class="kpi-value">892</div>
-                            <div class="kpi-delta"><span class="up">+23</span> este mes</div>
-                        </div>
-                    </div>
- 
-                    <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="card kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Órdenes Hoy</span>
-                                <div class="kpi-icon orders"><i class="bi bi-cart-check"></i></div>
-                            </div>
-                            <div class="kpi-value">34</div>
-                            <div class="kpi-delta">8 pendientes de envío</div>
-                        </div>
-                    </div>
-                </div>
- 
-                <div class="alert-stock mb-3">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <div>
-                        <strong>Alerta de Inventario</strong>
-                        Hay 4 productos con stock bajo que requieren atención inmediata.
-                    </div>
-                </div>
- 
-                <div class="row g-3 mb-3">
-                    <div class="col-12 col-lg-7">
-                        <div class="card chart-card h-100">
-                            <h5>Ventas Mensuales</h5>
-                            <canvas id="ventasMensualesChart" height="230"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-12 col-lg-5">
-                        <div class="card chart-card h-100">
-                            <h5>Ventas por Categoría</h5>
-                            <canvas id="ventasCategoriaChart" height="230"></canvas>
-                        </div>
-                    </div>
-                </div>
- 
-                <div class="card table-card">
-                    <div class="table-card-header">
-                        <h5>Productos con Stock Bajo</h5>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Stock Actual</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Camisa Polo Azul M</td>
-                                    <td>3</td>
-                                    <td><span class="badge-critico">Crítico</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Pantalón Jean Negro 32</td>
-                                    <td>5</td>
-                                    <td><span class="badge-critico">Crítico</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Vestido Casual Rojo S</td>
-                                    <td>2</td>
-                                    <td><span class="badge-critico">Crítico</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Chaqueta Cuero L</td>
-                                    <td>4</td>
-                                    <td><span class="badge-critico">Crítico</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<div class="page-header">
+    <h2>Dashboard</h2>
+    <p>Resumen general del sistema</p>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Ventas del Mes</span>
+                <div class="kpi-icon money"><i class="bi bi-currency-dollar"></i></div>
+            </div>
+            <div class="kpi-value">{{ ventasDelMes | currency:'':'symbol':'1.0-0' }}</div>
+            <div class="kpi-delta">total facturado este mes</div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Productos en Stock</span>
+                <div class="kpi-icon stock"><i class="bi bi-box-seam"></i></div>
+            </div>
+            <div class="kpi-value">{{ totalProductos }}</div>
+            <div class="kpi-delta">productos registrados</div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Clientes Registrados</span>
+                <div class="kpi-icon users"><i class="bi bi-people-fill"></i></div>
+            </div>
+            <div class="kpi-value">{{ totalClientes }}</div>
+            <div class="kpi-delta">clientes en total</div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card kpi-card">
+            <div class="kpi-top">
+                <span class="kpi-label">Órdenes Hoy</span>
+                <div class="kpi-icon orders"><i class="bi bi-cart-check"></i></div>
+            </div>
+            <div class="kpi-value">{{ ordenesHoy }}</div>
+            <div class="kpi-delta">ventas registradas hoy</div>
+        </div>
+    </div>
+</div>
+
+<div class="alert-stock mb-3" *ngIf="productosStockBajo.length > 0">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div>
+        <strong>Alerta de Inventario</strong>
+        Hay {{ productosStockBajo.length }} productos con stock bajo que requieren atención inmediata.
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-lg-7">
+        <div class="card chart-card h-100">
+            <h5>Ventas Mensuales</h5>
+            <canvas #ventasMensualesChart height="230"></canvas>
+        </div>
+    </div>
+    <div class="col-12 col-lg-5">
+        <div class="card chart-card h-100">
+            <h5>Ventas por Categoría</h5>
+            <canvas #ventasCategoriaChart height="230"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="table-card-header">
+        <h5>Productos con Stock Bajo</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock Actual</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of productosStockBajo">
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.stock }}</td>
+                    <td><span class="badge-critico">Crítico</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
