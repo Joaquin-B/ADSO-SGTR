@@ -1,7 +1,6 @@
-import { Component, ChangeDetectorRef, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Chart } from 'chart.js/auto';
 import { Venta } from '../../servicios/venta';
 
 @Component({
@@ -12,87 +11,90 @@ import { Venta } from '../../servicios/venta';
 })
 export class Reportes implements OnInit {
 
-  @ViewChild('ventasPorCategoriaBarChart') categoriaRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('tendenciaVentasCostosChart') tendenciaRef!: ElementRef<HTMLCanvasElement>;
-
   productosMasVendidos: any = [];
   totalIngresosTop: number = 0;
+
+  ventasPorCategoria: any = [];
+  tendenciaVentasCostos: any = [];
+
+  periodoSeleccionado: string = 'mes';
 
   constructor(private sventa: Venta, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
-    this.cargarVentasPorCategoria();
-    this.cargarTendencia();
-    this.cargarProductosMasVendidos();
+    this.cargarTodo();
   }
 
-  cargarVentasPorCategoria() {
-    this.sventa.ventasPorCategoria().subscribe({
-      next: (resultado: any) => {
-        const categorias = resultado.map((r: any) => r.categoria);
-        const totales = resultado.map((r: any) => Number(r.total));
+  cambiarPeriodo(valor: string) {
+    this.periodoSeleccionado = valor;
+    this.cargarTodo();
+  }
 
-        new Chart(this.categoriaRef.nativeElement, {
-          type: 'bar',
-          data: {
-            labels: categorias,
-            datasets: [{
-              label: 'Ventas',
-              data: totales,
-              backgroundColor: '#4f7df9'
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-          }
-        });
+  cargarTodo() {
+    const { inicio, fin } = this.calcularRangoFechas(this.periodoSeleccionado);
+    this.cargarVentasPorCategoria(inicio, fin);
+    this.cargarTendencia(inicio, fin);
+    this.cargarProductosMasVendidos(inicio, fin);
+  }
+
+  calcularRangoFechas(periodo: string): { inicio: string, fin: string } {
+    const ahora = new Date();
+    let inicio = new Date();
+
+    switch (periodo) {
+      case 'hoy':
+        inicio = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+        break;
+      case 'semana':
+        inicio = new Date(ahora);
+        inicio.setDate(ahora.getDate() - 7);
+        break;
+      case 'mes':
+        inicio = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+        break;
+      case 'anio':
+        inicio = new Date(ahora.getFullYear(), 0, 1);
+        break;
+    }
+
+    const fin = new Date(ahora);
+    fin.setHours(23, 59, 59);
+
+    return {
+      inicio: this.formatearFecha(inicio) + ' 00:00:00',
+      fin: this.formatearFecha(fin) + ' 23:59:59'
+    };
+  }
+
+  formatearFecha(fecha: Date): string {
+    const y = fecha.getFullYear();
+    const m = String(fecha.getMonth() + 1).padStart(2, '0');
+    const d = String(fecha.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  cargarVentasPorCategoria(inicio: string, fin: string) {
+    this.sventa.ventasPorCategoria(inicio, fin).subscribe({
+      next: (resultado: any) => {
+        this.ventasPorCategoria = resultado;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al consultar ventas por categoria:', err)
     });
   }
 
-  cargarTendencia() {
-    this.sventa.tendenciaVentasCostos().subscribe({
+  cargarTendencia(inicio: string, fin: string) {
+    this.sventa.tendenciaVentasCostos(inicio, fin).subscribe({
       next: (resultado: any) => {
-        const meses = resultado.map((r: any) => r.mes);
-        const ventas = resultado.map((r: any) => Number(r.ventas));
-        const costos = resultado.map((r: any) => Number(r.costos));
-
-        new Chart(this.tendenciaRef.nativeElement, {
-          type: 'line',
-          data: {
-            labels: meses,
-            datasets: [
-              {
-                label: 'Ventas',
-                data: ventas,
-                borderColor: '#22c55e',
-                backgroundColor: 'rgba(34, 197, 94, 0.15)',
-                fill: true,
-                tension: 0.3
-              },
-              {
-                label: 'Costos',
-                data: costos,
-                borderColor: '#ef4444',
-                backgroundColor: 'rgba(239, 68, 68, 0.15)',
-                fill: true,
-                tension: 0.3
-              }
-            ]
-          },
-          options: {
-            responsive: true
-          }
-        });
+        this.tendenciaVentasCostos = resultado;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al consultar la tendencia:', err)
     });
   }
 
-  cargarProductosMasVendidos() {
-    this.sventa.productosMasVendidos(5).subscribe({
+  cargarProductosMasVendidos(inicio: string, fin: string) {
+    this.sventa.productosMasVendidos(5, inicio, fin).subscribe({
       next: (resultado: any) => {
         this.totalIngresosTop = resultado.reduce((acum: number, p: any) => acum + Number(p.ingresos), 0);
 
