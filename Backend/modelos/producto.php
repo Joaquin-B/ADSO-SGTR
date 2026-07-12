@@ -1,12 +1,15 @@
 <?php
-class Producto {
+class Producto
+{
     private $conexion;
 
-    public function __construct($conexion) {
+    public function __construct($conexion)
+    {
         $this->conexion = $conexion;
     }
 
-    public function consulta() {
+    public function consulta()
+    {
         $sql = "SELECT p.*, c.nombre AS categoria, m.nombre AS marca, pr.nombre AS proveedor
                 FROM productos p
                 INNER JOIN categorias c ON p.id_categoria = c.id_categoria
@@ -22,7 +25,8 @@ class Producto {
         return $vec;
     }
 
-    public function buscarPorId($id) {
+    public function buscarPorId($id)
+    {
         $sql = "SELECT p.*, c.nombre AS categoria, m.nombre AS marca, pr.nombre AS proveedor
                 FROM productos p
                 INNER JOIN categorias c ON p.id_categoria = c.id_categoria
@@ -36,19 +40,22 @@ class Producto {
     }
 
     public function insertar($params) {
-        $sql = "INSERT INTO productos (codigo, nombre, id_categoria, id_marca, id_proveedor, genero, color, material, precio_compra, precio_venta, stock, estado)
-                VALUES ('$params->codigo', '$params->nombre', $params->id_categoria, $params->id_marca, $params->id_proveedor, '$params->genero', '$params->color', '$params->material', $params->precio_compra, $params->precio_venta, $params->stock, 1)";
+    $sql = "INSERT INTO productos (codigo, nombre, id_categoria, id_marca, id_proveedor, genero, color, material, precio_compra, precio_venta, stock, estado)
+            VALUES ('$params->codigo', '$params->nombre', $params->id_categoria, $params->id_marca, $params->id_proveedor, '$params->genero', '$params->color', '$params->material', $params->precio_compra, $params->precio_venta, $params->stock, 1)";
 
-        mysqli_query($this->conexion, $sql) or die('No se agrego el producto');
+    mysqli_query($this->conexion, $sql) or die('No se agrego el producto');
 
-        $vec = [];
-        $vec['resultado'] = "Ok";
-        $vec['mensaje'] = "Se agrego el producto";
+    $vec = [];
+    $vec['resultado'] = "Ok";
+    $vec['mensaje'] = "Se agrego el producto";
 
-        return $vec;
-    }
+   
 
-    public function editar($id, $params) {
+    return $vec;
+}
+
+    public function editar($id, $params)
+    {
         $sql = "UPDATE productos SET
                     codigo = '$params->codigo',
                     nombre = '$params->nombre',
@@ -71,7 +78,8 @@ class Producto {
         return $vec;
     }
 
-    public function eliminar($id) {
+    public function eliminar($id)
+    {
         $sql = "DELETE FROM productos WHERE id_producto = $id";
         mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el producto');
 
@@ -82,7 +90,8 @@ class Producto {
         return $vec;
     }
 
-    public function actualizarStock($id, $cantidad) {
+    public function actualizarStock($id, $cantidad)
+    {
         // $cantidad puede ser positivo (entrada, ej. compra) o negativo (salida, ej. venta)
         $sql = "UPDATE productos SET stock = stock + ($cantidad) WHERE id_producto = $id";
         mysqli_query($this->conexion, $sql) or die('No se pudo actualizar el stock');
@@ -94,7 +103,8 @@ class Producto {
         return $vec;
     }
 
-    public function obtenerStock($id) {
+    public function obtenerStock($id)
+    {
         $sql = "SELECT stock FROM productos WHERE id_producto = $id";
         $res = mysqli_query($this->conexion, $sql) or die('No se pudo obtener el stock');
 
@@ -102,7 +112,8 @@ class Producto {
         return $row['stock'];
     }
 
-    public function productosStockBajo($limite = 10) {
+    public function productosStockBajo($limite = 10)
+    {
         $sql = "SELECT p.*, c.nombre AS categoria, m.nombre AS marca
                 FROM productos p
                 INNER JOIN categorias c ON p.id_categoria = c.id_categoria

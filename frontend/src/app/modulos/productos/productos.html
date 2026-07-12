@@ -10,9 +10,94 @@
         <h2>Gestión de Productos</h2>
         <p>Administre el inventario de la tienda</p>
     </div>
-    <button class="btn btn-primary">
+    <button class="btn btn-primary" (click)="mostrarFormulario()">
         <i class="bi bi-plus-lg me-1"></i> Agregar Producto
     </button>
+</div>
+
+<div class="card mb-3" *ngIf="formularioVisible">
+    
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Código" [(ngModel)]="obj_producto.codigo">
+                <span style="color: red;" *ngIf="validar_codigo == false">Insertar Código</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Nombre" [(ngModel)]="obj_producto.nombre">
+                <span style="color: red;" *ngIf="validar_nombre == false">Insertar Nombre</span>
+            </div>
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_producto.id_categoria">
+                    <option value="" disabled hidden>Seleccionar Categoría</option>
+                    <option *ngFor="let cat of categoria" [value]="cat.id_categoria">{{ cat.nombre }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_categoria == false">Seleccionar Categoría</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="number" class="form-control" placeholder="Precio Compra"
+                    [(ngModel)]="obj_producto.precio_compra">
+                <span style="color: red;" *ngIf="validar_pcompra == false">Insertar Precio de la compra</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="number" class="form-control" placeholder="Precio Venta"
+                    [(ngModel)]="obj_producto.precio_venta">
+                <span style="color: red;" *ngIf="validar_pventa == false">Insertar Precio de la venta</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="number" class="form-control" placeholder="Stock" [(ngModel)]="obj_producto.stock">
+                <span style="color: red;" *ngIf="validar_stock == false">Insertar Stock</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_producto.id_proveedor">
+                    <option value="" disabled hidden>Seleccionar Proveedor</option>
+                    <option *ngFor="let prov of proveedor" [value]="prov.id_proveedor">{{ prov.nombre }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_proveedor == false">Seleccionar Proveedor</span>
+            </div>
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_producto.id_marca">
+                    <option value="" disabled hidden>Seleccionar Marca</option>
+                    <option *ngFor="let m of marca" [value]="m.id_marca">{{ m.nombre }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_marca == false">Seleccionar Marca</span>
+            </div>
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_producto.genero">
+                    <option value="" disabled hidden>Seleccionar Género</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Unisex">Unisex</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_genero == false">Seleccionar Género</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Color" [(ngModel)]="obj_producto.color">
+                <span style="color: red;" *ngIf="validar_color == false">Insertar Color</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Material (opcional)" [(ngModel)]="obj_producto.material">
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-6">
+                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+            </div>
+            <div class="col-lg-6">
+                <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card table-card">
@@ -27,7 +112,6 @@
                     <th>Precio Venta</th>
                     <th>Stock</th>
                     <th>Proveedor</th>
-                  
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -40,7 +124,6 @@
                     <td>{{item.precio_venta | currency }}</td>
                     <td>{{item.stock }}</td>
                     <td>{{item.proveedor }}</td>
-                   
                     <td>
                         <button class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-pencil"></i> Editar
@@ -51,7 +134,6 @@
                         </button>
                     </td>
                 </tr>
-              
             </tbody>
         </table>
     </div>
