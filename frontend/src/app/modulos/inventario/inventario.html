@@ -1,0 +1,67 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Inventario</li>
+    </ol>
+</nav>
+
+<div class="page-header">
+    <h2>Movimientos de Inventario</h2>
+    <p>Historial de entradas y salidas de productos</p>
+</div>
+
+<div class="card mb-3" style="padding: 14px 16px;">
+    <div class="row g-2 align-items-end">
+        <div class="col-lg-3">
+            <label>Filtrar por Producto</label>
+            <select class="form-control form-select" [(ngModel)]="filtroProducto" (change)="filtrarPorProducto()">
+                <option value="">Todos los productos</option>
+                <option *ngFor="let p of producto" [value]="p.id_producto">{{ p.nombre }}</option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <label>Desde</label>
+            <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio">
+        </div>
+        <div class="col-lg-3">
+            <label>Hasta</label>
+            <input type="date" class="form-control" [(ngModel)]="filtroFechaFin">
+        </div>
+        <div class="col-lg-3 d-flex gap-2">
+            <button class="btn btn-primary w-100" (click)="filtrarPorFecha()">Filtrar Fecha</button>
+            <button class="btn btn-secondary w-100" (click)="limpiarFiltros()">Limpiar</button>
+        </div>
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Usuario</th>
+                    <th>Referencia</th>
+                    <th>Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of movimiento">
+                    <td>{{ item.fecha | date:'yyyy-MM-dd HH:mm' }}</td>
+                    <td>{{ item.nombre_producto }}</td>
+                    <td>
+                        <span class="badge-pill soft-success" *ngIf="item.tipo === 'Entrada'">Entrada</span>
+                        <span class="badge-pill soft-danger" *ngIf="item.tipo === 'Salida'">Salida</span>
+                    </td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ item.nombre_usuario }}</td>
+                    <td>{{ item.referencia }}</td>
+                    <td>{{ item.descripcion }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

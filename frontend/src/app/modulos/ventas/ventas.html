@@ -10,9 +10,112 @@
         <h2>Gestión de Ventas</h2>
         <p>Historial y administración de las ventas realizadas</p>
     </div>
-    <button class="btn btn-primary" routerLink="/ventas/nueva">
+    <button class="btn btn-primary" (click)="mostrarFormulario()">
         <i class="bi bi-plus-lg me-1"></i> Nueva Venta
     </button>
+</div>
+
+<div class="card mb-3" *ngIf="formularioVisible">
+   
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+           
+            <div class="col-lg-3">
+                <select class="form-control form-select" [(ngModel)]="obj_venta.id_cliente">
+                    <option value="" disabled hidden>Seleccionar Cliente</option>
+                    <option *ngFor="let c of cliente" [value]="c.id_cliente">{{ c.nombre }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_cliente == false">Seleccionar Cliente</span>
+            </div>
+            <div class="col-lg-3">
+                <select class="form-control form-select" [(ngModel)]="obj_venta.id_usuario">
+                    <option value="" disabled hidden>Seleccionar Vendedor</option>
+                    <option *ngFor="let u of usuario" [value]="u.id_usuario">{{ u.nombres }} {{ u.apellidos }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_usuario == false">Seleccionar Vendedor</span>
+            </div>
+            <div class="col-lg-3">
+                <select class="form-control form-select" [(ngModel)]="obj_venta.metodo_pago">
+                    <option value="" disabled hidden>Método de Pago</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Tarjeta Débito">Tarjeta Débito</option>
+                    <option value="Tarjeta Crédito">Tarjeta Crédito</option>
+                    <option value="Transferencia">Transferencia</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_metodo_pago == false">Seleccionar Método de Pago</span>
+            </div>
+        </div>
+
+        <hr>
+        <h6>Productos</h6>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Producto</th>
+                    <th style="width: 15%;">Cantidad</th>
+                    <th style="width: 20%;">Precio Unitario</th>
+                    <th style="width: 20%;">Subtotal</th>
+                    <th style="width: 10%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let linea of obj_venta.detalle; let i = index">
+                    <td>
+                        <select class="form-control form-select" [(ngModel)]="linea.id_producto"
+                            (change)="autocompletarPrecio(linea)">
+                            <option value="" disabled hidden>Seleccionar Producto</option>
+                            <option *ngFor="let p of producto" [value]="p.id_producto">{{ p.nombre }} (Stock: {{ p.stock }})</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" min="1" [(ngModel)]="linea.cantidad">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" [(ngModel)]="linea.precio_unitario">
+                    </td>
+                    <td class="align-middle">
+                        {{ calcularSubtotalLinea(linea) | currency:'':'symbol':'1.0-0' }}
+                    </td>
+                    <td class="align-middle">
+                        <button class="btn btn-sm btn-outline-danger" (click)="quitarLinea(i)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <span style="color: red;" *ngIf="validar_detalle == false">Agrega al menos un producto válido</span>
+
+        <button class="btn btn-sm btn-outline-primary mb-3" (click)="agregarLinea()">
+            <i class="bi bi-plus-lg"></i> Agregar Producto
+        </button>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <label>Descuento</label>
+                <input type="number" class="form-control" [(ngModel)]="obj_venta.descuento">
+            </div>
+            <div class="col-lg-4">
+                <label>Subtotal</label>
+                <div class="form-control">{{ calcularSubtotalTotal() | currency:'':'symbol':'1.0-0' }}</div>
+            </div>
+            <div class="col-lg-4">
+                <label>Total</label>
+                <div class="form-control">{{ (calcularSubtotalTotal() - (obj_venta.descuento || 0)) | currency:'':'symbol':'1.0-0' }}</div>
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-6">
+                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+            </div>
+            <div class="col-lg-6">
+                <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row g-3 mb-3">
@@ -22,8 +125,8 @@
                 <span class="kpi-label">Ventas de Hoy</span>
                 <div class="kpi-icon money"><i class="bi bi-currency-dollar"></i></div>
             </div>
-            <div class="kpi-value">$225,000</div>
-            <div class="kpi-delta">12 transacciones</div>
+            <div class="kpi-value">{{ ventasHoyTotal | currency:'':'symbol':'1.0-0' }}</div>
+            <div class="kpi-delta">{{ ventasHoyCount }} transacciones</div>
         </div>
     </div>
 
@@ -33,8 +136,8 @@
                 <span class="kpi-label">Ventas del Mes</span>
                 <div class="kpi-icon stock"><i class="bi bi-graph-up"></i></div>
             </div>
-            <div class="kpi-value">$67,000</div>
-            <div class="kpi-delta"><span class="up">↑ 12%</span> vs mes anterior</div>
+            <div class="kpi-value">{{ ventasMesTotal | currency:'':'symbol':'1.0-0' }}</div>
+            <div class="kpi-delta">total facturado este mes</div>
         </div>
     </div>
 
@@ -44,7 +147,7 @@
                 <span class="kpi-label">Ticket Promedio</span>
                 <div class="kpi-icon users"><i class="bi bi-receipt"></i></div>
             </div>
-            <div class="kpi-value">$18,750</div>
+            <div class="kpi-value">{{ ticketPromedio | currency:'':'symbol':'1.0-0' }}</div>
             <div class="kpi-delta">por venta</div>
         </div>
     </div>
@@ -52,11 +155,11 @@
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card kpi-card">
             <div class="kpi-top">
-                <span class="kpi-label">Pendientes de Pago</span>
-                <div class="kpi-icon orders"><i class="bi bi-hourglass-split"></i></div>
+                <span class="kpi-label">Ventas Canceladas</span>
+                <div class="kpi-icon orders"><i class="bi bi-x-circle"></i></div>
             </div>
-            <div class="kpi-value">3</div>
-            <div class="kpi-delta">requieren seguimiento</div>
+            <div class="kpi-value">{{ ventasCanceladas }}</div>
+            <div class="kpi-delta">en el historial</div>
         </div>
     </div>
 </div>

@@ -9,6 +9,8 @@ import { Reportes } from './modulos/reportes/reportes';
 import { Login } from './modulos/login/login';
 import { Ventas } from './modulos/ventas/ventas';
 import { Configuracion } from './modulos/configuracion/configuracion';
+import { Inventario } from './modulos/inventario/inventario';
+import { Compras } from './modulos/compras/compras';
 
 export const routes: Routes = [
     {
@@ -22,6 +24,8 @@ export const routes: Routes = [
             { path: 'reportes', component: Reportes },
             { path: 'ventas', component: Ventas },
             { path: 'configuracion', component: Configuracion },
+            { path: 'inventario', component: Inventario },
+            { path: 'compras', component: Compras },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]
     },

@@ -5,6 +5,7 @@
     </ol>
 </nav>
 
+
 <div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
     <div>
         <h2>Gestión de Productos</h2>
@@ -13,6 +14,14 @@
     <button class="btn btn-primary" (click)="mostrarFormulario()">
         <i class="bi bi-plus-lg me-1"></i> Agregar Producto
     </button>
+</div>
+
+<div class="card mb-3" style="padding: 14px 16px;">
+    <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" class="form-control" placeholder="Buscar por código o Categoria..."
+            [(ngModel)]="terminoBusqueda" (input)="buscarProducto()">
+    </div>
 </div>
 
 <div class="card mb-3" *ngIf="formularioVisible">
@@ -116,7 +125,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of producto">
+                <tr *ngFor="let item of productoFiltrado">
                     <td>{{item.codigo }}</td>
                     <td>{{item.nombre }}</td>
                     <td>{{item.categoria }}</td>

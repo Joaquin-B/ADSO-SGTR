@@ -10,21 +10,62 @@
         <h2>Gestión de Clientes</h2>
         <p>Administre la información de sus clientes</p>
     </div>
-    <button class="btn btn-primary" routerLink="/clientes/nuevo">
+    <button class="btn btn-primary" (click)="mostrarFormulario()">
         <i class="bi bi-plus-lg me-1"></i> Nuevo Cliente
     </button>
+</div>
+
+<div class="card mb-3" *ngIf="formularioVisible">
+   
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Identificación" [(ngModel)]="obj_cliente.identificacion">
+                <span style="color: red;" *ngIf="validar_identificacion == false">Insertar Identificación</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Nombre" [(ngModel)]="obj_cliente.nombre">
+                <span style="color: red;" *ngIf="validar_nombre == false">Insertar Nombre</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Teléfono" [(ngModel)]="obj_cliente.telefono">
+                <span style="color: red;" *ngIf="validar_telefono == false">Insertar Telefono</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="email" class="form-control" placeholder="Email" [(ngModel)]="obj_cliente.email">
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Dirección" [(ngModel)]="obj_cliente.direccion">
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Ciudad" [(ngModel)]="obj_cliente.ciudad">
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-6">
+                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+            </div>
+            <div class="col-lg-6">
+                <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card mb-3" style="padding: 14px 16px;">
     <div class="search-bar">
         <i class="bi bi-search"></i>
-        <input type="text" class="form-control" placeholder="Buscar clientes...">
+         <input type="text" class="form-control" placeholder="Buscar clientes..."
+            [(ngModel)]="terminoBusqueda" (input)="buscarCliente()">
     </div>
 </div>
 
 <div class="row g-3">
-
-    <div class="col-12 col-md-6 col-xl-4" *ngFor="let item of cliente">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let item of clienteFiltrado">
         <div class="card info-card">
             <div class="info-card-header">
                 <div class="info-card-avatar"><i class="bi bi-person-fill"></i></div>
@@ -36,7 +77,6 @@
             <div class="info-card-detail"><i class="bi bi-envelope"></i> {{ item.email }}</div>
             <div class="info-card-detail"><i class="bi bi-telephone"></i> {{ item.telefono }}</div>
             <div class="info-card-detail"><i class="bi bi-geo-alt"></i> {{ item.direccion }}, {{ item.ciudad }}</div>
-          
             <div class="info-card-actions">
                 <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
                 <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
@@ -46,5 +86,4 @@
             </div>
         </div>
     </div>
-
 </div>

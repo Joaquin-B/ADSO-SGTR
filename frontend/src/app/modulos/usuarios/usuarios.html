@@ -10,16 +10,80 @@
         <h2>Gestión de Usuarios</h2>
         <p>Administre usuarios y roles del sistema</p>
     </div>
-    <button class="btn btn-primary" routerLink="/usuarios/nuevo">
+    <button class="btn btn-primary" (click)="mostrarFormulario()">
         <i class="bi bi-plus-lg me-1"></i> Nuevo Usuario
     </button>
 </div>
 
+<div class="card mb-3" *ngIf="formularioVisible">
+   
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Nombres" [(ngModel)]="obj_usuario.nombres">
+                <span style="color: red;" *ngIf="validar_nombres == false">Insertar Nombres</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Apellidos" [(ngModel)]="obj_usuario.apellidos">
+                <span style="color: red;" *ngIf="validar_apellidos == false">Insertar Apellidos</span>
+            </div>
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_usuario.tipo_documento">
+                    <option value="" disabled hidden>Tipo de Documento</option>
+                    <option value="CC">CC</option>
+                    <option value="TI">TI</option>
+                    <option value="CE">CE</option>
+                    <option value="Pasaporte">Pasaporte</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_tipo_documento == false">Seleccionar Tipo de Documento</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Número de Documento" [(ngModel)]="obj_usuario.numero_documento">
+                <span style="color: red;" *ngIf="validar_numero_documento == false">Insertar Número de Documento</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Teléfono" [(ngModel)]="obj_usuario.telefono">
+            </div>
+            <div class="col-lg-4">
+                <input type="email" class="form-control" placeholder="Email" [(ngModel)]="obj_usuario.email">
+                <span style="color: red;" *ngIf="validar_email == false">Insertar Email</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="password" class="form-control" placeholder="Contraseña" [(ngModel)]="obj_usuario.contrasena">
+                <span style="color: red;" *ngIf="validar_contrasena == false">Insertar Contraseña</span>
+            </div>
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_usuario.rol">
+                    <option value="" disabled hidden>Seleccionar Rol</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Vendedor">Vendedor</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_rol == false">Seleccionar Rol</span>
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-6">
+                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+            </div>
+            <div class="col-lg-6">
+                <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="card mb-3" style="padding: 14px 16px;">
     <div class="search-bar">
         <i class="bi bi-search"></i>
-        <input type="text" class="form-control" placeholder="Buscar usuarios...">
+        <input type="text" class="form-control" placeholder="Buscar por nombre o rol..."
+            [(ngModel)]="terminoBusqueda" (input)="buscarUsuario()">
     </div>
 </div>
 
@@ -37,7 +101,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of usuario">
+                <tr *ngFor="let item of usuarioFiltrado">
                     <td>{{item.nombres}}</td>
                     <td>{{item.apellidos}}</td>
                     <td>{{item.rol}}</td>
@@ -45,7 +109,7 @@
                         <span class="badge-pill soft-success" *ngIf="item.estado == 1">Activo</span>
                         <span class="badge-pill soft-danger" *ngIf="item.estado == 0">Inactivo</span>
                     </td>
-                    <td>{{item.fecha_registro}}</td>
+                    <td>{{item.fecha_registro | date:'yyyy-MM-dd HH:mm'}}</td>
                     <td>
                         <button class="icon-btn"><i class="bi bi-pencil"></i></button>
                         <button class="icon-btn danger"

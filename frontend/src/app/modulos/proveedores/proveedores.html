@@ -10,21 +10,64 @@
         <h2>Gestión de Proveedores</h2>
         <p>Administre la información de sus proveedores</p>
     </div>
-    <button class="btn btn-primary" routerLink="/proveedores/nuevo">
+    <button class="btn btn-primary" (click)="mostrarFormulario()">
         <i class="bi bi-plus-lg me-1"></i> Nuevo Proveedor
     </button>
+</div>
+
+<div class="card mb-3" *ngIf="formularioVisible">
+
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Nombre (ej: Nike Colombia S.A.S.)"
+                    [(ngModel)]="obj_proveedor.nombre">
+                <span style="color: red;" *ngIf="validar_nombre == false">Insertar Nombre</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="NIT" [(ngModel)]="obj_proveedor.nit">
+
+                <span style="color: red;" *ngIf="validar_nit == false">Insertar NIT</span>
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Teléfono" [(ngModel)]="obj_proveedor.telefono">
+                <span style="color: red;" *ngIf="validar_telefono == false">Insertar Teléfono</span>
+            </div>
+        </div>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4">
+                <input type="email" class="form-control" placeholder="Email" [(ngModel)]="obj_proveedor.email">
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Dirección" [(ngModel)]="obj_proveedor.direccion">
+            </div>
+            <div class="col-lg-4">
+                <input type="text" class="form-control" placeholder="Ciudad" [(ngModel)]="obj_proveedor.ciudad">
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-6">
+                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+            </div>
+            <div class="col-lg-6">
+                <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="card mb-3" style="padding: 14px 16px;">
     <div class="search-bar">
         <i class="bi bi-search"></i>
-        <input type="text" class="form-control" placeholder="Buscar proveedores...">
+        <input type="text" class="form-control" placeholder="Buscar proveedores..." [(ngModel)]="terminoBusqueda"
+            (input)="buscarProveedor()">
     </div>
 </div>
 
 <div class="row g-3">
-
-    <div class="col-12 col-md-6 col-xl-4" *ngFor="let item of proveedor">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let item of proveedorFiltrado">
         <div class="card info-card">
             <div class="info-card-header">
                 <div class="info-card-avatar"><i class="bi bi-truck"></i></div>
@@ -45,5 +88,4 @@
             </div>
         </div>
     </div>
-
 </div>
