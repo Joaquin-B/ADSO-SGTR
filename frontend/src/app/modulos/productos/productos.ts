@@ -218,16 +218,22 @@ export class Productos implements OnInit {
 
   guardar() {
     this.sproductos.insertar(this.obj_producto).subscribe((datos: any) => {
-      if (datos[`resultado`] == `OK`) {
+      if (datos['resultado'] == 'Ok') {
         this.consulta();
       }
     });
 
     this.formularioVisible = false;
     this.limpiarFormulario();
-
   }
 
+  eliminar(id: number) {
+    this.sproductos.eliminar(id).subscribe((datos: any) => {
+      if (datos['resultado'] == 'Ok') {
+        this.consulta();
+      }
+    });
+  }
 
 
 
