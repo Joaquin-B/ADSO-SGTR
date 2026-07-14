@@ -46,6 +46,8 @@ export class Productos implements OnInit {
   validar_marca = true;
   validar_genero = true;
   validar_color = true;
+  terminoBusqueda: string = '';
+  productoFiltrado: any = [];
 
   constructor(
     private sproductos: Producto,
@@ -66,6 +68,7 @@ export class Productos implements OnInit {
     this.sproductos.consulta().subscribe({
       next: (resultado: any) => {
         this.producto = resultado;
+        this.productoFiltrado = resultado; // <- arranca igual al completo
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -192,24 +195,40 @@ export class Productos implements OnInit {
       this.validar_color = true;
     }
 
-    if(this.validar_categoria==true && this.validar_codigo==true && this.validar_color==true && this.validar_genero==true && this.validar_marca==true && this.validar_nombre== true 
-      && this.validar_pcompra==true && this.validar_proveedor==true && this.validar_pventa==true && this.validar_pventa==true && this.validar_stock==true)
-      {
-          this.guardar();
-      }
+    if (this.validar_categoria == true && this.validar_codigo == true && this.validar_color == true && this.validar_genero == true && this.validar_marca == true && this.validar_nombre == true
+      && this.validar_pcompra == true && this.validar_proveedor == true && this.validar_pventa == true && this.validar_pventa == true && this.validar_stock == true) {
+      this.guardar();
+    }
 
 
+  }
+
+  buscarProducto() {
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+
+    if (termino == '') {
+      this.productoFiltrado = this.producto;
+    } else {
+      this.productoFiltrado = this.producto.filter((p: any) =>
+        p.codigo.toLowerCase().includes(termino) ||
+        p.categoria.toLowerCase().includes(termino)
+      );
+    }
   }
 
   guardar() {
     this.sproductos.insertar(this.obj_producto).subscribe((datos: any) => {
-      if(datos[`resultado`]==`OK`){
+      if (datos[`resultado`] == `OK`) {
         this.consulta();
       }
     });
 
-     this.formularioVisible = false;
-     this.limpiarFormulario();
+    this.formularioVisible = false;
+    this.limpiarFormulario();
 
   }
+
+
+
+
 }

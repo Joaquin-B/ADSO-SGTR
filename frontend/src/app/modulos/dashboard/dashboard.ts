@@ -1,6 +1,5 @@
-import { Component, ChangeDetectorRef, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chart } from 'chart.js/auto';
 import { Producto } from '../../servicios/producto';
 import { Cliente } from '../../servicios/cliente';
 import { Venta } from '../../servicios/venta';
@@ -13,17 +12,14 @@ import { Venta } from '../../servicios/venta';
 })
 export class Dashboard implements OnInit {
 
-  @ViewChild('ventasMensualesChart') ventasMensualesRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('ventasCategoriaChart') ventasCategoriaRef!: ElementRef<HTMLCanvasElement>;
-
   totalProductos: number = 0;
   totalClientes: number = 0;
   ventasDelMes: number = 0;
   ordenesHoy: number = 0;
   productosStockBajo: any = [];
 
-  listaVentas: any = [];
-  
+  ventasMensuales: any = [];
+  ventasPorCategoria: any = [];
 
   constructor(
     private sproducto: Producto,
@@ -33,20 +29,18 @@ export class Dashboard implements OnInit {
   ) { }
 
   ngOnInit(): void {
-  this.cargarProductos();
-  this.cargarClientes();
-  this.cargarVentas();
-  this.cargarStockBajo();
-  this.cargarVentasPorCategoria(); 
-}
+    this.cargarProductos();
+    this.cargarClientes();
+    this.cargarVentas();
+    this.cargarStockBajo();
+    this.cargarVentasPorCategoria();
+  }
 
   cargarProductos() {
     this.sproducto.consulta().subscribe({
       next: (resultado: any) => {
         this.totalProductos = resultado.length;
-       
         this.cdr.detectChanges();
-        this.cargarVentasPorCategoria();
       },
       error: (err) => console.error('Error al consultar productos:', err)
     });
@@ -65,8 +59,6 @@ export class Dashboard implements OnInit {
   cargarVentas() {
     this.sventa.consulta().subscribe({
       next: (resultado: any) => {
-        this.listaVentas = resultado;
-
         const hoy = new Date().toISOString().split('T')[0];
         const mesActual = hoy.substring(0, 7);
 
@@ -77,8 +69,19 @@ export class Dashboard implements OnInit {
         this.ordenesHoy = resultado
           .filter((v: any) => v.fecha && v.fecha.startsWith(hoy)).length;
 
+        // Tabla de ventas mensuales (en vez de grafica de linea)
+        const totalesPorMes: { [mes: string]: number } = {};
+        resultado.forEach((v: any) => {
+          if (!v.fecha) return;
+          const mes = v.fecha.substring(0, 7);
+          totalesPorMes[mes] = (totalesPorMes[mes] || 0) + Number(v.total);
+        });
+
+        this.ventasMensuales = Object.keys(totalesPorMes)
+          .sort()
+          .map(mes => ({ mes, total: totalesPorMes[mes] }));
+
         this.cdr.detectChanges();
-        this.graficarVentasMensuales();
       },
       error: (err) => console.error('Error al consultar ventas:', err)
     });
@@ -94,58 +97,11 @@ export class Dashboard implements OnInit {
     });
   }
 
-  graficarVentasMensuales() {
-    // Agrupamos el total vendido por mes (formato 'YYYY-MM')
-    const totalesPorMes: { [mes: string]: number } = {};
-
-    this.listaVentas.forEach((v: any) => {
-      if (!v.fecha) return;
-      const mes = v.fecha.substring(0, 7); // 'YYYY-MM'
-      totalesPorMes[mes] = (totalesPorMes[mes] || 0) + Number(v.total);
-    });
-
-    const meses = Object.keys(totalesPorMes).sort();
-    const totales = meses.map(m => totalesPorMes[m]);
-
-    new Chart(this.ventasMensualesRef.nativeElement, {
-      type: 'line',
-      data: {
-        labels: meses,
-        datasets: [{
-          label: 'Ventas',
-          data: totales,
-          borderColor: '#4f7df9',
-          backgroundColor: 'rgba(79, 125, 249, 0.15)',
-          fill: true,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
   cargarVentasPorCategoria() {
     this.sventa.ventasPorCategoria().subscribe({
       next: (resultado: any) => {
-        const categorias = resultado.map((r: any) => r.categoria);
-        const totales = resultado.map((r: any) => Number(r.total));
-
-        new Chart(this.ventasCategoriaRef.nativeElement, {
-          type: 'doughnut',
-          data: {
-            labels: categorias,
-            datasets: [{
-              data: totales,
-              backgroundColor: ['#4f7df9', '#22c55e', '#a855f7', '#f97316', '#ef4444', '#14b8a6']
-            }]
-          },
-          options: {
-            responsive: true
-          }
-        });
+        this.ventasPorCategoria = resultado;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al consultar ventas por categoria:', err)
     });

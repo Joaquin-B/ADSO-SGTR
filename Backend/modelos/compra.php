@@ -37,45 +37,53 @@ class Compra
         return $row;
     }
 
-    public function consultaPorUsuario($id_usuario) {
-    $sql = "SELECT c.*, p.nombre AS nombre_proveedor, u.nombres AS nombre_usuario
+    public function consultaPorUsuario($id_usuario)
+    {
+        $sql = "SELECT c.*, p.nombre AS nombre_proveedor, u.nombres AS nombre_usuario
             FROM compras c
             INNER JOIN proveedores p ON c.id_proveedor = p.id_proveedor
             INNER JOIN usuarios u ON c.id_usuario = u.id_usuario
             WHERE c.id_usuario = $id_usuario
             ORDER BY c.fecha DESC";
-    $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar las compras del usuario');
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar las compras del usuario');
 
-    $vec = [];
-    while ($row = mysqli_fetch_array($res)) {
-        $vec[] = $row;
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
     }
-    return $vec;
-}
 
 
     public function insertar($params)
     {
-        // 1. Insertar la cabecera de la compra
+        // Generar el numero_compra automaticamente
+        $sqlNumero = "SELECT numero_compra FROM compras ORDER BY id_compra DESC LIMIT 1";
+        $resNumero = mysqli_query($this->conexion, $sqlNumero);
+        $filaNumero = mysqli_fetch_array($resNumero);
+
+        if ($filaNumero) {
+            $ultimoNumero = intval(substr($filaNumero['numero_compra'], 2));
+            $siguienteNumero = $ultimoNumero + 1;
+        } else {
+            $siguienteNumero = 1;
+        }
+
+        $numero_compra = 'C-' . str_pad($siguienteNumero, 4, '0', STR_PAD_LEFT);
+
         $sql = "INSERT INTO compras (numero_compra, id_proveedor, id_usuario, total, estado)
-            VALUES ('$params->numero_compra', $params->id_proveedor, $params->id_usuario, $params->total, 'Completada')";
+            VALUES ('$numero_compra', $params->id_proveedor, $params->id_usuario, $params->total, 'Completada')";
         mysqli_query($this->conexion, $sql) or die('No se pudo registrar la compra');
 
-        // 2. Obtener el id de la compra recien insertada
         $id_compra = mysqli_insert_id($this->conexion);
 
-        // 3. Por cada linea del detalle: insertar detalle, actualizar stock, registrar movimiento
         $detalleCompra = new DetalleCompra($this->conexion);
         $producto = new Producto($this->conexion);
 
         foreach ($params->detalle as $linea) {
-            // Insertar la linea de detalle
             $detalleCompra->insertarDetalle($id_compra, $linea);
-
-            // Aumentar el stock del producto (entrada)
             $producto->actualizarStock($linea->id_producto, $linea->cantidad);
 
-            // Registrar el movimiento de inventario
             $sqlMov = "INSERT INTO movimientos_inventario (tipo, id_producto, cantidad, id_usuario, referencia, descripcion)
                    VALUES ('Entrada', $linea->id_producto, $linea->cantidad, $params->id_usuario, 'Compra #$id_compra', 'Entrada por compra')";
             mysqli_query($this->conexion, $sqlMov) or die('No se pudo registrar el movimiento de inventario');
@@ -85,6 +93,7 @@ class Compra
         $vec['resultado'] = "Ok";
         $vec['mensaje'] = "Se registro la compra correctamente";
         $vec['id_compra'] = $id_compra;
+        $vec['numero_compra'] = $numero_compra;
 
         return $vec;
     }

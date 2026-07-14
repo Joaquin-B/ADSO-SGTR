@@ -33,14 +33,28 @@ export class Venta {
   obtenerDetalleVenta(id: number) {
     return this.http.get(`${this.url}?control=obtenerDetalleVenta&id=${id}`);
   }
-  productosMasVendidos(limite: number = 5) {
-    return this.http.get(`${this.url}?control=productosMasVendidos&limite=${limite}`);
+
+  productosMasVendidos(limite: number = 5, fecha_inicio?: string, fecha_fin?: string) {
+    let url = `${this.url}?control=productosMasVendidos&limite=${limite}`;
+    if (fecha_inicio && fecha_fin) {
+      url += `&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`;
+    }
+    return this.http.get(url);
   }
 
-  tendenciaVentasCostos() {
-    return this.http.get(`${this.url}?control=tendenciaVentasCostos`);
+  tendenciaVentasCostos(fecha_inicio?: string, fecha_fin?: string) {
+    let url = `${this.url}?control=tendenciaVentasCostos`;
+    if (fecha_inicio && fecha_fin) {
+      url += `&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`;
+    }
+    return this.http.get(url);
   }
-  ventasPorCategoria() {
-    return this.http.get(`${this.url}?control=ventasPorCategoria`);
+
+  ventasPorCategoria(fecha_inicio?: string, fecha_fin?: string) {
+    let url = `${this.url}?control=ventasPorCategoria`;
+    if (fecha_inicio && fecha_fin) {
+      url += `&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`;
+    }
+    return this.http.get(url);
   }
 }

@@ -1,0 +1,136 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Home</a></li>
+        <li class="breadcrumb-item active">Compras</li>
+    </ol>
+</nav>
+
+<div class="page-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div>
+        <h2>Gestión de Compras</h2>
+        <p>Registro de compras a proveedores</p>
+    </div>
+    <button class="btn btn-primary" (click)="mostrarFormulario()">
+        <i class="bi bi-plus-lg me-1"></i> Nueva Compra
+    </button>
+</div>
+
+<div class="card mb-3" *ngIf="formularioVisible">
+    
+    <div class="card-body">
+        <div class="row g-2 mb-2">
+           
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_compra.id_proveedor">
+                    <option value="" disabled hidden>Seleccionar Proveedor</option>
+                    <option *ngFor="let p of proveedor" [value]="p.id_proveedor">{{ p.nombre }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_proveedor == false">Seleccionar Proveedor</span>
+            </div>
+            <div class="col-lg-4">
+                <select class="form-control form-select" [(ngModel)]="obj_compra.id_usuario">
+                    <option value="" disabled hidden>Seleccionar Usuario</option>
+                    <option *ngFor="let u of usuario" [value]="u.id_usuario">{{ u.nombres }} {{ u.apellidos }}</option>
+                </select>
+                <span style="color: red;" *ngIf="validar_usuario == false">Seleccionar Usuario</span>
+            </div>
+        </div>
+
+        <hr>
+        <h6>Productos</h6>
+
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Producto</th>
+                    <th style="width: 15%;">Cantidad</th>
+                    <th style="width: 20%;">Precio Unitario</th>
+                    <th style="width: 20%;">Subtotal</th>
+                    <th style="width: 10%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let linea of obj_compra.detalle; let i = index">
+                    <td>
+                        <select class="form-control form-select" [(ngModel)]="linea.id_producto"
+                            (change)="autocompletarPrecio(linea)">
+                            <option value="" disabled hidden>Seleccionar Producto</option>
+                            <option *ngFor="let p of producto" [value]="p.id_producto">{{ p.nombre }}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" min="1" [(ngModel)]="linea.cantidad">
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" [(ngModel)]="linea.precio_unitario">
+                    </td>
+                    <td class="align-middle">
+                        {{ calcularSubtotalLinea(linea) | currency:'':'symbol':'1.0-0' }}
+                    </td>
+                    <td class="align-middle">
+                        <button class="btn btn-sm btn-outline-danger" (click)="quitarLinea(i)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <span style="color: red;" *ngIf="validar_detalle == false">Agrega al menos un producto válido</span>
+
+        <button class="btn btn-sm btn-outline-primary mb-3" (click)="agregarLinea()">
+            <i class="bi bi-plus-lg"></i> Agregar Producto
+        </button>
+
+        <div class="row g-2 mb-2">
+            <div class="col-lg-4 ms-auto">
+                <label>Total</label>
+                <div class="form-control">{{ calcularTotal() | currency:'':'symbol':'1.0-0' }}</div>
+            </div>
+        </div>
+
+        <div class="row g-2">
+            <div class="col-lg-6">
+                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+            </div>
+            <div class="col-lg-6">
+                <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3" style="padding: 14px 16px;">
+    <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" class="form-control" placeholder="Buscar por N° compra o proveedor..."
+            [(ngModel)]="terminoBusqueda" (input)="buscarCompra()">
+    </div>
+</div>
+
+<div class="card table-card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>N° Compra</th>
+                    <th>Proveedor</th>
+                    <th>Usuario</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of compraFiltrada">
+                    <td>{{ item.numero_compra }}</td>
+                    <td>{{ item.nombre_proveedor }}</td>
+                    <td>{{ item.nombre_usuario }}</td>
+                    <td>{{ item.fecha | date:'yyyy-MM-dd' }}</td>
+                    <td>{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
+                    <td>{{ item.estado }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

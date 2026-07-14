@@ -61,13 +61,41 @@
     <div class="col-12 col-lg-6">
         <div class="card chart-card h-100">
             <h5>Ventas por Categoría</h5>
-            <canvas #ventasPorCategoriaBarChart height="230"></canvas>
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Categoría</th>
+                        <th class="text-end">Total Vendido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of ventasPorCategoria">
+                        <td>{{ item.categoria }}</td>
+                        <td class="text-end">{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     <div class="col-12 col-lg-6">
         <div class="card chart-card h-100">
             <h5>Tendencia de Ventas vs Costos</h5>
-            <canvas #tendenciaVentasCostosChart height="230"></canvas>
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Mes</th>
+                        <th class="text-end">Ventas</th>
+                        <th class="text-end">Costos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of tendenciaVentasCostos">
+                        <td>{{ item.mes }}</td>
+                        <td class="text-end">{{ item.ventas | currency:'':'symbol':'1.0-0' }}</td>
+                        <td class="text-end">{{ item.costos | currency:'':'symbol':'1.0-0' }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

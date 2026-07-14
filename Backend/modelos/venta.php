@@ -39,10 +39,22 @@ class Venta
 
     public function insertar($params)
     {
+        // Generar el numero_venta automaticamente
+        $sqlNumero = "SELECT numero_venta FROM ventas ORDER BY id_venta DESC LIMIT 1";
+        $resNumero = mysqli_query($this->conexion, $sqlNumero);
+        $filaNumero = mysqli_fetch_array($resNumero);
+
+        if ($filaNumero) {
+            $ultimoNumero = intval(substr($filaNumero['numero_venta'], 2));
+            $siguienteNumero = $ultimoNumero + 1;
+        } else {
+            $siguienteNumero = 1;
+        }
+
+        $numero_venta = 'V-' . str_pad($siguienteNumero, 4, '0', STR_PAD_LEFT);
 
         $producto = new Producto($this->conexion);
 
-        // 1. Validar stock suficiente y calcular el subtotal en el mismo recorrido
         $subtotal = 0;
         foreach ($params->detalle as $linea) {
             $stockActual = $producto->obtenerStock($linea->id_producto);
@@ -56,19 +68,15 @@ class Venta
             $subtotal += $linea->cantidad * $linea->precio_unitario;
         }
 
-        // 2. Calcular el total con el descuento aplicado
         $descuento = $params->descuento;
         $total = $subtotal - $descuento;
 
-        // 3. Insertar la cabecera de la venta
         $sql = "INSERT INTO ventas (numero_venta, id_cliente, id_usuario, subtotal, descuento, total, metodo_pago, estado)
-            VALUES ('$params->numero_venta', $params->id_cliente, $params->id_usuario, $subtotal, $descuento, $total, '$params->metodo_pago', 'Completada')";
+            VALUES ('$numero_venta', $params->id_cliente, $params->id_usuario, $subtotal, $descuento, $total, '$params->metodo_pago', 'Completada')";
         mysqli_query($this->conexion, $sql) or die('No se pudo registrar la venta');
 
-        // 4. Obtener el id de la venta recien insertada
         $id_venta = mysqli_insert_id($this->conexion);
 
-        // 5. Por cada linea del detalle: insertar detalle, disminuir stock, registrar movimiento
         $detalleVenta = new DetalleVenta($this->conexion);
 
         foreach ($params->detalle as $linea) {
@@ -84,6 +92,7 @@ class Venta
         $vec['resultado'] = "Ok";
         $vec['mensaje'] = "Se registro la venta correctamente";
         $vec['id_venta'] = $id_venta;
+        $vec['numero_venta'] = $numero_venta;
         $vec['subtotal'] = $subtotal;
         $vec['total'] = $total;
 
