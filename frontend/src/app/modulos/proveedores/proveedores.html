@@ -81,8 +81,7 @@
             <div class="info-card-detail"><i class="bi bi-geo-alt"></i> {{ item.direccion }}, {{ item.ciudad }}</div>
             <div class="info-card-actions">
                 <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
-                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
-                    onclick="return confirmarAccion('¿Desea eliminar este proveedor?')">
+                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3" (click)="eliminar(item.id_proveedor)">
                     <i class="bi bi-trash"></i>
                 </button>
             </div>

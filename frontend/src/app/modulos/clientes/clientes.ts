@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Cliente } from '../../servicios/cliente';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-clientes',
@@ -118,4 +119,33 @@ export class Clientes implements OnInit {
       );
     }
   }
+
+
+
+  eliminar(id: number) {
+  Swal.fire({
+    title: "¿Está seguro de eliminar el cliente?",
+    text: "El proceso no podrá ser revertido!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Sí, eliminar!",
+    cancelButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.scliente.eliminar(id).subscribe((datos: any) => {
+        if (datos['resultado'] == 'ok') {
+          this.consulta();
+        }
+      });
+
+      Swal.fire({
+        title: "Cliente eliminado!",
+        text: "El cliente ha sido eliminado.",
+        icon: "success"
+      });
+    }
+  });
+}
 }

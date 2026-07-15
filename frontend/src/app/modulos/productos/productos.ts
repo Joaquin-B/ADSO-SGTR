@@ -6,6 +6,7 @@ import { Producto } from '../../servicios/producto';
 import { Categoria } from '../../servicios/categoria';
 import { Proveedor } from '../../servicios/proveedor';
 import { Marca } from '../../servicios/marca';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-productos',
@@ -228,11 +229,39 @@ export class Productos implements OnInit {
   }
 
   eliminar(id: number) {
-    this.sproductos.eliminar(id).subscribe((datos: any) => {
-      if (datos['resultado'] == 'Ok') {
-        this.consulta();
-      }
+    Swal.fire({
+      title: "¿Esta seguro de eliminar el producto?",
+      text: "El proceso no podra ser revertido!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar!",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed)
+      {
+        /////////////////////////////////
+        this.sproductos.eliminar(id).subscribe((datos: any) => {
+          if (datos['resultado'] == 'Ok') {
+            this.consulta();
+          }
+        })
+      ////////////////////////////////    
+
+      Swal.fire({
+        title: "Producto eliminado!",
+        text: "El producto ha sido eliminado.",
+        icon: "success"
+      });
+    }
     });
+
+
+
+
+
+
   }
 
 

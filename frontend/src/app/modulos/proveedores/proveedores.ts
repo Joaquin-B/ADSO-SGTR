@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Proveedor } from '../../servicios/proveedor';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-proveedores',
@@ -37,18 +38,18 @@ export class Proveedores implements OnInit {
     this.consulta();
   }
 
-consulta() {
-  this.sproveedor.consulta().subscribe({
-    next: (resultado: any) => {
-      this.proveedor = resultado;
-      this.proveedorFiltrado = resultado;
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error('Error al consultar proveedores:', err);
-    }
-  });
-}
+  consulta() {
+    this.sproveedor.consulta().subscribe({
+      next: (resultado: any) => {
+        this.proveedor = resultado;
+        this.proveedorFiltrado = resultado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al consultar proveedores:', err);
+      }
+    });
+  }
 
   mostrarFormulario() {
     this.modoEdicion = false;
@@ -108,14 +109,43 @@ consulta() {
   }
 
   buscarProveedor() {
-  const termino = this.terminoBusqueda.toLowerCase().trim();
+    const termino = this.terminoBusqueda.toLowerCase().trim();
 
-  if (termino == '') {
-    this.proveedorFiltrado = this.proveedor;
-  } else {
-    this.proveedorFiltrado = this.proveedor.filter((p: any) =>
-      p.nombre.toLowerCase().includes(termino)
-    );
+    if (termino == '') {
+      this.proveedorFiltrado = this.proveedor;
+    } else {
+      this.proveedorFiltrado = this.proveedor.filter((p: any) =>
+        p.nombre.toLowerCase().includes(termino)
+      );
+    }
   }
+
+eliminar(id: number) {
+  Swal.fire({
+    title: "¿Está seguro de eliminar el proveedor?",
+    text: "El proceso no podrá ser revertido!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Sí, eliminar!",
+    cancelButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.sproveedor.eliminar(id).subscribe((datos: any) => {
+        if (datos['resultado'] == 'Ok') {
+          this.consulta();
+        }
+      });
+
+      Swal.fire({
+        title: "Proveedor eliminado!",
+        text: "El proveedor ha sido eliminado.",
+        icon: "success"
+      });
+    }
+  });
 }
+
+
 }

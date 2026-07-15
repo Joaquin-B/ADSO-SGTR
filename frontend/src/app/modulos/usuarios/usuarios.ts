@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Usuario } from '../../servicios/usuario';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-usuarios',
@@ -35,7 +36,7 @@ export class Usuarios implements OnInit {
   validar_contrasena = true;
   validar_rol = true;
   terminoBusqueda: string = '';
-usuarioFiltrado: any = [];
+  usuarioFiltrado: any = [];
 
   constructor(private susuario: Usuario, private cdr: ChangeDetectorRef) { }
 
@@ -43,18 +44,18 @@ usuarioFiltrado: any = [];
     this.consulta();
   }
 
-consulta() {
-  this.susuario.consulta().subscribe({
-    next: (resultado: any) => {
-      this.usuario = resultado;
-      this.usuarioFiltrado = resultado;
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error('Error al consultar usuarios:', err);
-    }
-  });
-}
+  consulta() {
+    this.susuario.consulta().subscribe({
+      next: (resultado: any) => {
+        this.usuario = resultado;
+        this.usuarioFiltrado = resultado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al consultar usuarios:', err);
+      }
+    });
+  }
 
   mostrarFormulario() {
     this.modoEdicion = false;
@@ -134,6 +135,8 @@ consulta() {
     this.susuario.insertar(this.obj_usuario).subscribe((datos: any) => {
       if (datos['resultado'] == 'Ok') {
         this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
       }
     });
 
@@ -142,15 +145,42 @@ consulta() {
   }
 
   buscarUsuario() {
-  const termino = this.terminoBusqueda.toLowerCase().trim();
+    const termino = this.terminoBusqueda.toLowerCase().trim();
 
-  if (termino == '') {
-    this.usuarioFiltrado = this.usuario;
-  } else {
-    this.usuarioFiltrado = this.usuario.filter((u: any) =>
-      u.nombres.toLowerCase().includes(termino) ||
-      u.rol.toLowerCase().includes(termino)
-    );
+    if (termino == '') {
+      this.usuarioFiltrado = this.usuario;
+    } else {
+      this.usuarioFiltrado = this.usuario.filter((u: any) =>
+        u.nombres.toLowerCase().includes(termino) ||
+        u.rol.toLowerCase().includes(termino)
+      );
+    }
   }
-}
+
+  eliminar(id: number) {
+    Swal.fire({
+      title: "¿Está seguro de eliminar el usuario?",
+      text: "El proceso no podrá ser revertido!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar!",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.susuario.eliminar(id).subscribe((datos: any) => {
+          if (datos['resultado'] == 'Ok') {
+            this.consulta();
+          }
+        });
+
+        Swal.fire({
+          title: "Usuario eliminado!",
+          text: "El usuario ha sido eliminado.",
+          icon: "success"
+        });
+      }
+    });
+  }
 }
