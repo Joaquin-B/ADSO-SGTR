@@ -8,17 +8,16 @@ class Proveedor
         $this->conexion = $conexion;
     }
 
-    public function consulta()
-    {
-        $sql = "SELECT * FROM proveedores ORDER BY nombre";
-        $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla proveedores');
+    public function consulta() {
+    $sql = "SELECT * FROM proveedores WHERE estado = 1 ORDER BY nombre";
+    $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla proveedores');
 
-        $vec = [];
-        while ($row = mysqli_fetch_array($res)) {
-            $vec[] = $row;
-        }
-        return $vec;
+    $vec = [];
+    while ($row = mysqli_fetch_array($res)) {
+        $vec[] = $row;
     }
+    return $vec;
+}
 
     public function buscarPorId($id)
     {
@@ -63,15 +62,14 @@ class Proveedor
         return $vec;
     }
 
-    public function eliminar($id)
-    {
-        $sql = "DELETE FROM proveedores WHERE id_proveedor = $id";
-        mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el proveedor');
+   public function eliminar($id) {
+    $sql = "UPDATE proveedores SET estado = 0 WHERE id_proveedor = $id";
+    mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el proveedor');
 
-        $vec = [];
-        $vec['resultado'] = "Ok";
-        $vec['mensaje'] = "Proveedor eliminado correctamente";
+    $vec = [];
+    $vec['resultado'] = "Ok";
+    $vec['mensaje'] = "Proveedor eliminado correctamente";
 
-        return $vec;
-    }
+    return $vec;
+}
 }

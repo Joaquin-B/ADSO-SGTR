@@ -1,23 +1,26 @@
 <?php
-class Usuario {
+class Usuario
+{
     private $conexion;
 
-    public function __construct($conexion) {
+    public function __construct($conexion)
+    {
         $this->conexion = $conexion;
     }
 
-    public function consulta() {
-        $sql = "SELECT * FROM usuarios ORDER BY nombres";
-        $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla usuario');
+   public function consulta() {
+    $sql = "SELECT * FROM usuarios WHERE estado = 1 ORDER BY nombres";
+    $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla usuarios');
 
-        $vec = [];
-        while ($row = mysqli_fetch_array($res)) {
-            $vec[] = $row;
-        }
-        return $vec;
+    $vec = [];
+    while ($row = mysqli_fetch_array($res)) {
+        $vec[] = $row;
     }
+    return $vec;
+}
 
-    public function buscarPorId($id) {
+    public function buscarPorId($id)
+    {
         $sql = "SELECT * FROM usuarios WHERE id_usuario = $id";
         $res = mysqli_query($this->conexion, $sql) or die('No se pudo buscar el usuario');
 
@@ -25,21 +28,35 @@ class Usuario {
         return $row;
     }
 
-    public function insertar($params) {
-        // fecha_registro no se manda: MySQL usa current_timestamp() automaticamente
+  public function insertar($params) {
+    try {
         $sql = "INSERT INTO usuarios (nombres, apellidos, tipo_documento, numero_documento, telefono, email, contraseña, rol, estado)
                 VALUES ('$params->nombres', '$params->apellidos', '$params->tipo_documento', '$params->numero_documento', '$params->telefono', '$params->email', '$params->contrasena', '$params->rol', 1)";
 
-        mysqli_query($this->conexion, $sql) or die('No se agrego el usuario');
+        mysqli_query($this->conexion, $sql);
 
         $vec = [];
         $vec['resultado'] = "Ok";
         $vec['mensaje'] = "Se agrego el usuario";
 
-        return $vec;
+    } catch (mysqli_sql_exception $e) {
+        $vec = [];
+        $vec['resultado'] = "Error";
+
+        if (strpos($e->getMessage(), 'numero_documento') !== false) {
+            $vec['mensaje'] = "Ese número de documento ya está registrado";
+        } elseif (strpos($e->getMessage(), 'email') !== false) {
+            $vec['mensaje'] = "Ese email ya está registrado";
+        } else {
+            $vec['mensaje'] = "No se pudo agregar el usuario";
+        }
     }
 
-    public function editar($id, $params) {
+    return $vec;
+}
+
+    public function editar($id, $params)
+    {
         $sql = "UPDATE usuarios SET
                     nombres = '$params->nombres',
                     apellidos = '$params->apellidos',
@@ -59,8 +76,9 @@ class Usuario {
         return $vec;
     }
 
-    public function eliminar($id) {
-        $sql = "DELETE FROM usuarios WHERE id_usuario = $id";
+    public function eliminar($id)
+    {
+        $sql = "UPDATE usuarios SET estado = 0 WHERE id_usuario = $id";
         mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el usuario');
 
         $vec = [];
@@ -70,7 +88,8 @@ class Usuario {
         return $vec;
     }
 
-    public function cambiarPassword($id, $params) {
+    public function cambiarPassword($id, $params)
+    {
         $sql = "UPDATE usuarios SET contraseña = '$params->contrasena' WHERE id_usuario = $id";
         mysqli_query($this->conexion, $sql) or die('No se pudo cambiar la contraseña');
 

@@ -8,17 +8,16 @@ class Cliente
         $this->conexion = $conexion;
     }
 
-    public function consulta()
-    {
-        $sql = "SELECT * FROM clientes ORDER BY nombre";
-        $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla clientes');
+    public function consulta() {
+    $sql = "SELECT * FROM clientes WHERE estado = 1 ORDER BY nombre";
+    $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla clientes');
 
-        $vec = [];
-        while ($row = mysqli_fetch_array($res)) {
-            $vec[] = $row;
-        }
-        return $vec;
+    $vec = [];
+    while ($row = mysqli_fetch_array($res)) {
+        $vec[] = $row;
     }
+    return $vec;
+}
 
     public function buscarPorId($id)
     {
@@ -63,16 +62,15 @@ class Cliente
         return $vec;
     }
 
-    public function eliminar($id)
-    {
-        $sql = "DELETE FROM clientes WHERE id_cliente = $id";
-        mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el cliente');
+   public function eliminar($id) {
+    $sql = "UPDATE clientes SET estado = 0 WHERE id_cliente = $id";
+    mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el cliente');
 
-        $vec = [];
-        $vec['resultado'] = "Ok";
-        $vec['mensaje'] = "Cliente eliminado correctamente";
+    $vec = [];
+    $vec['resultado'] = "Ok";
+    $vec['mensaje'] = "Cliente eliminado correctamente";
 
-        return $vec;
-    }
+    return $vec;
+}
 }
 ?>
