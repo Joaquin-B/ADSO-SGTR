@@ -100,7 +100,8 @@
 
         <div class="row g-2">
             <div class="col-lg-6">
-                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+                <button value="guardar"   class="btn btn-primary w-100" (click)="validar('guardar')" *ngIf="botones_form == false">Guardar</button>
+                 <button value="editar" class="btn btn-primary w-100" (click)="validar('editar')"  *ngIf="botones_form == true">Editar</button>
             </div>
             <div class="col-lg-6">
                 <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
@@ -134,8 +135,8 @@
                     <td>{{item.stock }}</td>
                     <td>{{item.proveedor }}</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil"></i> Editar
+                        <button class="btn btn-sm btn-outline-primary" (click) = "cargar_datos(item, item.id_producto)">
+                            <i class="bi bi-pencil" ></i> Editar
                         </button>
                         <button class="btn btn-sm btn-outline-danger"
                             (click) = "eliminar(item.id_producto)">

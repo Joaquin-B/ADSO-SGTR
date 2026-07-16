@@ -13,9 +13,10 @@ import Swal from 'sweetalert2';
 })
 export class Clientes implements OnInit {
   cliente: any;
+  id_cliente: any;
 
   formularioVisible: boolean = false;
-  modoEdicion: boolean = false;
+
 
   obj_cliente: any = {
     identificacion: '',
@@ -31,6 +32,7 @@ export class Clientes implements OnInit {
   validar_telefono = true;
   terminoBusqueda: string = '';
   clienteFiltrado: any = [];
+  botones_form = false;
 
   constructor(private scliente: Cliente, private cdr: ChangeDetectorRef) { }
 
@@ -52,14 +54,15 @@ export class Clientes implements OnInit {
   }
 
   mostrarFormulario() {
-    this.modoEdicion = false;
     this.limpiarFormulario();
     this.formularioVisible = true;
+    this.botones_form = false;
   }
 
   cancelar() {
     this.formularioVisible = false;
     this.limpiarFormulario();
+    this.botones_form = false;
   }
 
   limpiarFormulario() {
@@ -73,7 +76,7 @@ export class Clientes implements OnInit {
     };
   }
 
-  validar() {
+  validar(funcion: any) {
     if (this.obj_cliente.identificacion == "") {
       this.validar_identificacion = false;
     } else {
@@ -86,14 +89,12 @@ export class Clientes implements OnInit {
       this.validar_nombre = true;
     }
 
-    if (this.obj_cliente.telefono == "") {
-      this.validar_telefono = false;
-    } else {
-      this.validar_telefono = true;
+    if (this.validar_identificacion == true && this.validar_nombre == true && funcion == "guardar") {
+      this.guardar();
     }
 
-    if (this.validar_identificacion == true && this.validar_nombre == true && this.validar_telefono == true) {
-      this.guardar();
+    if (this.validar_identificacion == true && this.validar_nombre == true && funcion == "editar") {
+      this.editar();
     }
   }
 
@@ -101,6 +102,8 @@ export class Clientes implements OnInit {
     this.scliente.insertar(this.obj_cliente).subscribe((datos: any) => {
       if (datos['resultado'] == 'Ok') {
         this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
       }
     });
 
@@ -120,32 +123,60 @@ export class Clientes implements OnInit {
     }
   }
 
-
-
   eliminar(id: number) {
-  Swal.fire({
-    title: "¿Está seguro de eliminar el cliente?",
-    text: "El proceso no podrá ser revertido!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Sí, eliminar!",
-    cancelButtonText: "Cancelar"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.scliente.eliminar(id).subscribe((datos: any) => {
-        if (datos['resultado'] == 'ok') {
-          this.consulta();
-        }
-      });
+    Swal.fire({
+      title: "¿Está seguro de eliminar el cliente?",
+      text: "El proceso no podrá ser revertido!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar!",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.scliente.eliminar(id).subscribe((datos: any) => {
+          if (datos['resultado'] = "Ok") {
+            this.consulta();
+          }
+        });
 
-      Swal.fire({
-        title: "Cliente eliminado!",
-        text: "El cliente ha sido eliminado.",
-        icon: "success"
-      });
-    }
-  });
-}
+        Swal.fire({
+          title: "Cliente eliminado!",
+          text: "El cliente ha sido eliminado.",
+          icon: "success"
+        });
+      }
+    });
+  }
+
+
+  cargar_datos(items: any, id: number) {
+    this.obj_cliente = {
+      identificacion: items.identificacion,
+      nombre: items.nombre,
+      telefono: items.telefono,
+      email: items.email,
+      direccion: items.direccion,
+      ciudad: items.ciudad
+    };
+
+    this.id_cliente = id;
+
+    this.botones_form = true;
+    this.formularioVisible = true;
+  }
+
+  editar() {
+    this.scliente.editar(this.id_cliente, this.obj_cliente).subscribe((datos: any) => {
+      if (datos['resultado'] == 'Ok') {
+        this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
+      }
+    });
+
+    this.formularioVisible = false;
+    this.limpiarFormulario();
+  }
 }

@@ -11,6 +11,7 @@ import { Ventas } from './modulos/ventas/ventas';
 import { Configuracion } from './modulos/configuracion/configuracion';
 import { Inventario } from './modulos/inventario/inventario';
 import { Compras } from './modulos/compras/compras';
+import { NoEncontro } from './modulos/no-encontro/no-encontro';
 
 export const routes: Routes = [
     {
@@ -30,7 +31,6 @@ export const routes: Routes = [
         ]
     },
 
-    {
-        path: 'login', component: Login
-    }
+    {  path: 'login', component: Login  },
+    { path: "**", component: NoEncontro}
 ];

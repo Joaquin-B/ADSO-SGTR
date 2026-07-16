@@ -13,9 +13,11 @@ import Swal from 'sweetalert2';
 })
 export class Proveedores implements OnInit {
   proveedor: any;
+  id_proveedor: any;
 
-  formularioVisible: boolean = false;
-  modoEdicion: boolean = false;
+
+  formularioVisible = false;
+
 
   obj_proveedor: any = {
     nombre: '',
@@ -31,6 +33,7 @@ export class Proveedores implements OnInit {
   validar_telefono = true;
   terminoBusqueda: string = '';
   proveedorFiltrado: any = [];
+  botones_form = false;
 
   constructor(private sproveedor: Proveedor, private cdr: ChangeDetectorRef) { }
 
@@ -52,14 +55,16 @@ export class Proveedores implements OnInit {
   }
 
   mostrarFormulario() {
-    this.modoEdicion = false;
+   
     this.limpiarFormulario();
     this.formularioVisible = true;
+    this.botones_form = false;
   }
 
   cancelar() {
     this.formularioVisible = false;
     this.limpiarFormulario();
+    this.botones_form = false;
   }
 
   limpiarFormulario() {
@@ -73,7 +78,7 @@ export class Proveedores implements OnInit {
     };
   }
 
-  validar() {
+  validar(funcion: any) {
     if (this.obj_proveedor.nombre == "") {
       this.validar_nombre = false;
     } else {
@@ -92,15 +97,21 @@ export class Proveedores implements OnInit {
       this.validar_telefono = true;
     }
 
-    if (this.validar_nombre == true && this.validar_nit == true && this.validar_telefono == true) {
+    if (this.validar_nombre == true && this.validar_nit == true && this.validar_telefono == true && funcion == "guardar") {
       this.guardar();
+    }
+
+    if (this.validar_nombre == true && this.validar_nit == true && this.validar_telefono == true && funcion == "editar") {
+      this.editar();
     }
   }
 
   guardar() {
     this.sproveedor.insertar(this.obj_proveedor).subscribe((datos: any) => {
-      if (datos['resultado'] == 'Ok') {
+      if (datos['resultado'] = "Ok") {
         this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
       }
     });
 
@@ -120,32 +131,60 @@ export class Proveedores implements OnInit {
     }
   }
 
-eliminar(id: number) {
-  Swal.fire({
-    title: "¿Está seguro de eliminar el proveedor?",
-    text: "El proceso no podrá ser revertido!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Sí, eliminar!",
-    cancelButtonText: "Cancelar"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.sproveedor.eliminar(id).subscribe((datos: any) => {
-        if (datos['resultado'] == 'Ok') {
-          this.consulta();
-        }
-      });
+  cargar_datos(items: any, id: number) {
+    this.obj_proveedor = {
+      nombre: items.nombre,
+      nit: items.nit,
+      telefono: items.telefono,
+      email: items.email,
+      direccion: items.direccion,
+      ciudad: items.ciudad
+    };
 
-      Swal.fire({
-        title: "Proveedor eliminado!",
-        text: "El proveedor ha sido eliminado.",
-        icon: "success"
-      });
-    }
-  });
-}
+    this.id_proveedor = id;
 
+    this.botones_form = true;
+    this.formularioVisible = true;
+  }
+
+  eliminar(id: number) {
+    Swal.fire({
+      title: "¿Está seguro de eliminar el proveedor?",
+      text: "El proceso no podrá ser revertido!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar!",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sproveedor.eliminar(id).subscribe((datos: any) => {
+          if (datos['resultado'] == 'Ok') {
+            this.consulta();
+          }
+        });
+
+        Swal.fire({
+          title: "Proveedor eliminado!",
+          text: "El proveedor ha sido eliminado.",
+          icon: "success"
+        });
+      }
+    });
+  }
+
+  editar() {
+    this.sproveedor.editar(this.id_proveedor, this.obj_proveedor).subscribe((datos: any) => {
+      if (datos['resultado'] == 'Ok') {
+        this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
+      }
+    });
+
+    this.formularioVisible = false;
+    this.limpiarFormulario();
+  }
 
 }

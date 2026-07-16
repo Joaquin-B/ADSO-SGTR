@@ -8,16 +8,17 @@ class Proveedor
         $this->conexion = $conexion;
     }
 
-    public function consulta() {
-    $sql = "SELECT * FROM proveedores WHERE estado = 1 ORDER BY nombre";
-    $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla proveedores');
+    public function consulta()
+    {
+        $sql = "SELECT * FROM proveedores WHERE estado = 1 ORDER BY nombre";
+        $res = mysqli_query($this->conexion, $sql) or die('No encontro la tabla proveedores');
 
-    $vec = [];
-    while ($row = mysqli_fetch_array($res)) {
-        $vec[] = $row;
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
     }
-    return $vec;
-}
 
     public function buscarPorId($id)
     {
@@ -30,14 +31,26 @@ class Proveedor
 
     public function insertar($params)
     {
-        $sql = "INSERT INTO proveedores (nombre, nit, telefono, email, direccion, ciudad, estado)
+        try {
+            $sql = "INSERT INTO proveedores (nombre, nit, telefono, email, direccion, ciudad, estado)
                 VALUES ('$params->nombre', '$params->nit', '$params->telefono', '$params->email', '$params->direccion', '$params->ciudad', 1)";
 
-        mysqli_query($this->conexion, $sql) or die('No se agrego el proveedor');
+            mysqli_query($this->conexion, $sql);
 
-        $vec = [];
-        $vec['resultado'] = "Ok";
-        $vec['mensaje'] = "Se agrego el proveedor";
+            $vec = [];
+            $vec['resultado'] = "Ok";
+            $vec['mensaje'] = "Se agrego el proveedor";
+
+        } catch (mysqli_sql_exception $e) {
+            $vec = [];
+            $vec['resultado'] = "Error";
+
+            if (strpos($e->getMessage(), 'nit') !== false) {
+                $vec['mensaje'] = "Ese NIT ya está registrado";
+            } else {
+                $vec['mensaje'] = "No se pudo agregar el proveedor";
+            }
+        }
 
         return $vec;
     }
@@ -62,14 +75,15 @@ class Proveedor
         return $vec;
     }
 
-   public function eliminar($id) {
-    $sql = "UPDATE proveedores SET estado = 0 WHERE id_proveedor = $id";
-    mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el proveedor');
+    public function eliminar($id)
+    {
+        $sql = "UPDATE proveedores SET estado = 0 WHERE id_proveedor = $id";
+        mysqli_query($this->conexion, $sql) or die('No se pudo eliminar el proveedor');
 
-    $vec = [];
-    $vec['resultado'] = "Ok";
-    $vec['mensaje'] = "Proveedor eliminado correctamente";
+        $vec = [];
+        $vec['resultado'] = "Ok";
+        $vec['mensaje'] = "Proveedor eliminado correctamente";
 
-    return $vec;
-}
+        return $vec;
+    }
 }

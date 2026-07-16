@@ -20,7 +20,7 @@
     <div class="card-body">
         <div class="row g-2 mb-2">
             <div class="col-lg-4">
-                <input type="text" class="form-control" placeholder="Nombre (ej: Nike Colombia S.A.S.)"
+                <input type="text" class="form-control" placeholder="Nombre "
                     [(ngModel)]="obj_proveedor.nombre">
                 <span style="color: red;" *ngIf="validar_nombre == false">Insertar Nombre</span>
             </div>
@@ -49,7 +49,10 @@
 
         <div class="row g-2">
             <div class="col-lg-6">
-                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+                <button class="btn btn-primary w-100" (click)="validar('guardar')"
+                    *ngIf="botones_form == false">Guardar</button>
+                <button class="btn btn-primary w-100" (click)="validar('editar')"
+                    *ngIf="botones_form == true">Editar</button>
             </div>
             <div class="col-lg-6">
                 <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
@@ -80,7 +83,9 @@
             <div class="info-card-detail"><i class="bi bi-telephone"></i> {{ item.telefono }}</div>
             <div class="info-card-detail"><i class="bi bi-geo-alt"></i> {{ item.direccion }}, {{ item.ciudad }}</div>
             <div class="info-card-actions">
-                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
+                <button class="btn btn-sm btn-outline-primary" (click)="cargar_datos(item, item.id_proveedor)">
+                    <i class="bi bi-pencil"></i> Editar
+                </button>
                 <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3" (click)="eliminar(item.id_proveedor)">
                     <i class="bi bi-trash"></i>
                 </button>

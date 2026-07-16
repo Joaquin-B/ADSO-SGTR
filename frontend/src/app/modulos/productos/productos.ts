@@ -19,11 +19,12 @@ export class Productos implements OnInit {
   categoria: any;
   proveedor: any;
   marca: any;
+  id_producto: any;
 
   formularioVisible: boolean = false;
   modoEdicion: boolean = false;
 
-  obj_producto: any = {
+  obj_producto = {
     codigo: '',
     nombre: '',
     id_categoria: '',
@@ -49,6 +50,7 @@ export class Productos implements OnInit {
   validar_color = true;
   terminoBusqueda: string = '';
   productoFiltrado: any = [];
+  botones_form = false;
 
   constructor(
     private sproductos: Producto,
@@ -108,14 +110,17 @@ export class Productos implements OnInit {
   }
 
   mostrarFormulario() {
+
     this.modoEdicion = false;
     this.limpiarFormulario();
     this.formularioVisible = true;
+    this.botones_form = false;
   }
 
   cancelar() {
     this.formularioVisible = false;
     this.limpiarFormulario();
+    this.botones_form = false;
   }
 
   limpiarFormulario() {
@@ -135,7 +140,7 @@ export class Productos implements OnInit {
   }
 
 
-  validar() {
+  validar(funcion: any) {
     if (this.obj_producto.codigo == "") {
       this.validar_codigo = false;
     } else {
@@ -197,10 +202,14 @@ export class Productos implements OnInit {
     }
 
     if (this.validar_categoria == true && this.validar_codigo == true && this.validar_color == true && this.validar_genero == true && this.validar_marca == true && this.validar_nombre == true
-      && this.validar_pcompra == true && this.validar_proveedor == true && this.validar_pventa == true && this.validar_pventa == true && this.validar_stock == true) {
+      && this.validar_pcompra == true && this.validar_proveedor == true && this.validar_pventa == true && this.validar_pventa == true && this.validar_stock == true && funcion == "guardar") {
       this.guardar();
     }
 
+    if (this.validar_categoria == true && this.validar_codigo == true && this.validar_color == true && this.validar_genero == true && this.validar_marca == true && this.validar_nombre == true
+      && this.validar_pcompra == true && this.validar_proveedor == true && this.validar_pventa == true && this.validar_pventa == true && this.validar_stock == true && funcion == "editar") {
+      this.editar();
+    }
 
   }
 
@@ -221,6 +230,8 @@ export class Productos implements OnInit {
     this.sproductos.insertar(this.obj_producto).subscribe((datos: any) => {
       if (datos['resultado'] == 'Ok') {
         this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
       }
     });
 
@@ -239,22 +250,21 @@ export class Productos implements OnInit {
       confirmButtonText: "Sí, eliminar!",
       cancelButtonText: "Cancelar"
     }).then((result) => {
-      if (result.isConfirmed)
-      {
+      if (result.isConfirmed) {
         /////////////////////////////////
         this.sproductos.eliminar(id).subscribe((datos: any) => {
           if (datos['resultado'] == 'Ok') {
             this.consulta();
           }
         })
-      ////////////////////////////////    
+        ////////////////////////////////    
 
-      Swal.fire({
-        title: "Producto eliminado!",
-        text: "El producto ha sido eliminado.",
-        icon: "success"
-      });
-    }
+        Swal.fire({
+          title: "Producto eliminado!",
+          text: "El producto ha sido eliminado.",
+          icon: "success"
+        });
+      }
     });
 
 
@@ -264,6 +274,38 @@ export class Productos implements OnInit {
 
   }
 
+  cargar_datos(items: any, id: number) {
 
+
+    this.obj_producto = {
+      codigo: items.codigo,
+      nombre: items.nombre,
+      id_categoria: items.id_categoria,
+      precio_compra: items.precio_compra,
+      precio_venta: items.precio_venta,
+      stock: items.stock,
+      id_proveedor: items.id_proveedor,
+      id_marca: items.id_marca,
+      genero: items.genero,
+      color: items.color,
+      material: items.material
+    };
+
+    this.id_producto = id;
+
+    this.botones_form = true;
+    this.formularioVisible = true;
+  }
+
+  editar() {
+    this.sproductos.editar(this.id_producto, this.obj_producto).subscribe((datos: any) => {
+      if (datos['resultado'] == "Ok") {
+        this.consulta();
+      }
+    });
+
+    this.formularioVisible = false;
+    this.limpiarFormulario();
+  }
 
 }

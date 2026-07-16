@@ -55,7 +55,7 @@
         </div>
 
         <div class="row g-2 mb-2">
-            <div class="col-lg-4">
+            <div class="col-lg-4" *ngIf="botones_form == false">
                 <input type="password" class="form-control" placeholder="Contraseña"
                     [(ngModel)]="obj_usuario.contrasena">
                 <span style="color: red;" *ngIf="validar_contrasena == false">Insertar Contraseña</span>
@@ -72,7 +72,10 @@
 
         <div class="row g-2">
             <div class="col-lg-6">
-                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+                <button class="btn btn-primary w-100" (click)="validar('guardar')"
+                    *ngIf="botones_form == false">Guardar</button>
+                <button class="btn btn-primary w-100" (click)="validar('editar')"
+                    *ngIf="botones_form == true">Editar</button>
             </div>
             <div class="col-lg-6">
                 <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
@@ -113,7 +116,9 @@
                     </td>
                     <td>{{item.fecha_registro | date:'yyyy-MM-dd HH:mm'}}</td>
                     <td>
-                        <button class="icon-btn"><i class="bi bi-pencil"></i></button>
+                        <button class="icon-btn" (click)="cargar_datos(item, item.id_usuario)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
                         <button class="icon-btn danger" (click)="eliminar(item.id_usuario)">
                             <i class="bi bi-trash"></i>
                         </button>

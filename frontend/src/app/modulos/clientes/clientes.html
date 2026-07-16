@@ -16,11 +16,12 @@
 </div>
 
 <div class="card mb-3" *ngIf="formularioVisible">
-   
+
     <div class="card-body">
         <div class="row g-2 mb-2">
             <div class="col-lg-4">
-                <input type="text" class="form-control" placeholder="Identificación" [(ngModel)]="obj_cliente.identificacion">
+                <input type="text" class="form-control" placeholder="Identificación"
+                    [(ngModel)]="obj_cliente.identificacion">
                 <span style="color: red;" *ngIf="validar_identificacion == false">Insertar Identificación</span>
             </div>
             <div class="col-lg-4">
@@ -47,7 +48,10 @@
 
         <div class="row g-2">
             <div class="col-lg-6">
-                <button class="btn btn-primary w-100" (click)="validar()">Guardar</button>
+                <button class="btn btn-primary w-100" (click)="validar('guardar')"
+                    *ngIf="botones_form == false">Guardar</button>
+                <button class="btn btn-primary w-100" (click)="validar('editar')"
+                    *ngIf="botones_form == true">Editar</button>
             </div>
             <div class="col-lg-6">
                 <button class="btn btn-secondary w-100" (click)="cancelar()">Cancelar</button>
@@ -59,8 +63,8 @@
 <div class="card mb-3" style="padding: 14px 16px;">
     <div class="search-bar">
         <i class="bi bi-search"></i>
-         <input type="text" class="form-control" placeholder="Buscar clientes..."
-            [(ngModel)]="terminoBusqueda" (input)="buscarCliente()">
+        <input type="text" class="form-control" placeholder="Buscar clientes..." [(ngModel)]="terminoBusqueda"
+            (input)="buscarCliente()">
     </div>
 </div>
 
@@ -78,10 +82,11 @@
             <div class="info-card-detail"><i class="bi bi-telephone"></i> {{ item.telefono }}</div>
             <div class="info-card-detail"><i class="bi bi-geo-alt"></i> {{ item.direccion }}, {{ item.ciudad }}</div>
             <div class="info-card-actions">
-                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i> Editar</button>
-                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3"
-                    (click) = "eliminar(item.id_cliente)">
-                     <i class="bi bi-trash"></i>
+                <button class="btn btn-sm btn-outline-primary" (click)="cargar_datos(item, item.id_cliente)">
+                    <i class="bi bi-pencil"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-outline-danger flex-grow-0 px-3" (click)="eliminar(item.id_cliente)">
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
         </div>

@@ -15,7 +15,8 @@ export class Usuarios implements OnInit {
   usuario: any;
 
   formularioVisible: boolean = false;
-  modoEdicion: boolean = false;
+  id_usuario: any;
+
 
   obj_usuario: any = {
     nombres: '',
@@ -28,6 +29,7 @@ export class Usuarios implements OnInit {
     rol: ''
   };
 
+  botones_form = false;
   validar_nombres = true;
   validar_apellidos = true;
   validar_tipo_documento = true;
@@ -58,14 +60,16 @@ export class Usuarios implements OnInit {
   }
 
   mostrarFormulario() {
-    this.modoEdicion = false;
+
     this.limpiarFormulario();
     this.formularioVisible = true;
+    this.botones_form = false;
   }
 
   cancelar() {
     this.formularioVisible = false;
     this.limpiarFormulario();
+    this.botones_form = false;
   }
 
   limpiarFormulario() {
@@ -81,7 +85,7 @@ export class Usuarios implements OnInit {
     };
   }
 
-  validar() {
+  validar(funcion: any) {
     if (this.obj_usuario.nombres == "") {
       this.validar_nombres = false;
     } else {
@@ -112,7 +116,8 @@ export class Usuarios implements OnInit {
       this.validar_email = true;
     }
 
-    if (this.obj_usuario.contrasena == "") {
+    // La contraseña solo es obligatoria al insertar, no al editar
+    if (this.botones_form == false && this.obj_usuario.contrasena == "") {
       this.validar_contrasena = false;
     } else {
       this.validar_contrasena = true;
@@ -126,8 +131,14 @@ export class Usuarios implements OnInit {
 
     if (this.validar_nombres == true && this.validar_apellidos == true && this.validar_tipo_documento == true
       && this.validar_numero_documento == true && this.validar_email == true && this.validar_contrasena == true
-      && this.validar_rol == true) {
+      && this.validar_rol == true && funcion == "guardar") {
       this.guardar();
+    }
+
+    if (this.validar_nombres == true && this.validar_apellidos == true && this.validar_tipo_documento == true
+      && this.validar_numero_documento == true && this.validar_email == true && this.validar_contrasena == true
+      && this.validar_rol == true && funcion == "editar") {
+      this.editar();
     }
   }
 
@@ -142,6 +153,25 @@ export class Usuarios implements OnInit {
 
     this.formularioVisible = false;
     this.limpiarFormulario();
+    
+  }
+
+  cargar_datos(items: any, id: number) {
+    this.obj_usuario = {
+      nombres: items.nombres,
+      apellidos: items.apellidos,
+      tipo_documento: items.tipo_documento,
+      numero_documento: items.numero_documento,
+      telefono: items.telefono,
+      email: items.email,
+      contrasena: '',
+      rol: items.rol
+    };
+
+    this.id_usuario = id;
+
+    this.botones_form = true;
+    this.formularioVisible = true;
   }
 
   buscarUsuario() {
@@ -182,5 +212,18 @@ export class Usuarios implements OnInit {
         });
       }
     });
+  }
+
+  editar() {
+    this.susuario.editar(this.id_usuario, this.obj_usuario).subscribe((datos: any) => {
+      if (datos['resultado'] == 'Ok') {
+        this.consulta();
+      } else if (datos['resultado'] == 'Error') {
+        alert(datos['mensaje']);
+      }
+    });
+
+    this.formularioVisible = false;
+    this.limpiarFormulario();
   }
 }

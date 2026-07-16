@@ -42,16 +42,26 @@ class Producto
 
     public function insertar($params)
     {
-        $sql = "INSERT INTO productos (codigo, nombre, id_categoria, id_marca, id_proveedor, genero, color, material, precio_compra, precio_venta, stock, estado)
-            VALUES ('$params->codigo', '$params->nombre', $params->id_categoria, $params->id_marca, $params->id_proveedor, '$params->genero', '$params->color', '$params->material', $params->precio_compra, $params->precio_venta, $params->stock, 1)";
+        try {
+            $sql = "INSERT INTO productos (codigo, nombre, id_categoria, id_marca, id_proveedor, genero, color, material, precio_compra, precio_venta, stock, estado)
+                VALUES ('$params->codigo', '$params->nombre', $params->id_categoria, $params->id_marca, $params->id_proveedor, '$params->genero', '$params->color', '$params->material', $params->precio_compra, $params->precio_venta, $params->stock, 1)";
 
-        mysqli_query($this->conexion, $sql) or die('No se agrego el producto');
+            mysqli_query($this->conexion, $sql);
 
-        $vec = [];
-        $vec['resultado'] = "Ok";
-        $vec['mensaje'] = "Se agrego el producto";
+            $vec = [];
+            $vec['resultado'] = "Ok";
+            $vec['mensaje'] = "Se agrego el producto";
 
+        } catch (mysqli_sql_exception $e) {
+            $vec = [];
+            $vec['resultado'] = "Error";
 
+            if (strpos($e->getMessage(), 'codigo') !== false) {
+                $vec['mensaje'] = "Ese código ya está registrado";
+            } else {
+                $vec['mensaje'] = "No se pudo agregar el producto";
+            }
+        }
 
         return $vec;
     }
