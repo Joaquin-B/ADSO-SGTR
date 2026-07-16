@@ -1,10 +1,34 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router'; 
+
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-nav',
-  imports: [RouterModule], // 👈 sin esto, nav.html no puede usar routerLink
+  imports: [RouterModule, CommonModule],
   templateUrl: './nav.html',
   styleUrl: './nav.css',
 })
-export class Nav { }
+export class Nav {
+  nombre: any;
+  apellido: any;
+  rol: any;
+
+  constructor(private router: Router) { }
+
+  ngOnInit(): void {
+    this.nombre = sessionStorage.getItem("nombres");
+    this.apellido = sessionStorage.getItem("apellidos");
+    this.rol = sessionStorage.getItem("rol");
+  }
+
+  cerrar() {
+    sessionStorage.setItem("id", "");
+    sessionStorage.setItem("email", "");
+    sessionStorage.setItem("nombres", "");
+    sessionStorage.removeItem("apellidos");
+    sessionStorage.setItem("rol", "");
+    this.router.navigate(['login']);
+  }
+
+}

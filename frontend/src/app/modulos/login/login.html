@@ -6,35 +6,28 @@
             <h3>Sistema de Gestión para Tiendas de Ropa</h3>
             <p class="subtitle">Ingrese sus credenciales para acceder al sistema</p>
  
-            <form onsubmit="return confirmarAccion('¿Desea iniciar sesión?')">
+            <form onsubmit="return confirmarAccion('¿Desea iniciar sesión?') ">
  
-                <div class="mb-3">
-                    <label for="tipoUsuario">Tipo de Usuario</label>
-                    <select id="tipoUsuario" class="form-select" required>
-                        <option value="" selected disabled>Seleccione tipo de usuario</option>
-                        <option value="administrador">Administrador</option>
-                        <option value="vendedor">Vendedor</option>
-                    </select>
-                </div>
+                
  
-                <div class="mb-3">
+                <div class="mb-3" >
                     <label for="correo">Correo Electrónico</label>
-                    <input type="email" id="correo" class="form-control" placeholder="usuario@ejemplo.com" required>
+                    <input  type="email" id="email" class="form-control" name="email" placeholder="usuario@ejemplo.com" required  [(ngModel)]="email">
                 </div>
  
-                <div class="mb-2">
-                    <label for="contrasena">Contraseña</label>
+                <div class="mb-2"  >
+                    <label for="contraseña">Contraseña</label>
                     <div class="password-field">
-                        <input type="password" id="contrasena" class="form-control" placeholder="••••••••" required>
+                        <input  type="password" id="contrasena" class="form-control" placeholder="••••••••" required name="contrasena" [(ngModel)]="contrasena">
                         <button type="button" class="toggle-password" onclick="togglePassword('contrasena', this)">
                             <i class="bi bi-eye"></i>
                         </button>
                     </div>
                 </div>
  
-                <a href="#" class="forgot-link">¿Olvidó su contraseña?</a>
+                <a routerLink="/login" class="forgot-link">¿Olvidó su contraseña?</a>
  
-                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                <button type="submit" value="Ingresar" class="btn btn-primary" (click)="consulta('')">Iniciar Sesión</button>
             </form>
  
             <div class="login-footer">
