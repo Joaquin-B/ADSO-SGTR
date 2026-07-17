@@ -1,20 +1,18 @@
 <nav class="sidebar-nav">
-    <a  routerLink="/dashboard" ><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
-    <a  routerLink="/productos" *ngIf="rol=='Administrador'"><i class="bi bi-box-seam"></i> Productos</a>
+    <a routerLink="/dashboard"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+    <a routerLink="/productos" *ngIf="rol=='Administrador'"><i class="bi bi-box-seam"></i> Productos</a>
     <a routerLink="/inventario"><i class="bi bi-clipboard-data"></i> Inventario</a>
     <a routerLink="/compras"><i class="bi bi-bag-plus"></i> Compras</a>
-    <a  routerLink="/ventas"><i class="bi bi-cart"></i> Ventas</a>
-    <a  routerLink="/clientes"><i class="bi bi-tags"></i> Clientes</a>
-    <a  routerLink="/usuarios" *ngIf="rol=='Administrador'"><i class="bi bi-people"></i> Usuarios</a>
-    <a  routerLink="/proveedores" *ngIf="rol=='Administrador'"><i class="bi bi-truck"></i> Proveedores</a>
-    <a  routerLink="/reportes" *ngIf="rol=='Administrador'"><i class="bi bi-bar-chart-line"></i> Reportes</a>
-    <a  routerLink="/configuracion" *ngIf="rol=='Administrador'"><i class="bi bi-gear"></i> Configuración</a>
-
+    <a routerLink="/ventas"><i class="bi bi-cart"></i> Ventas</a>
+    <a routerLink="/clientes"><i class="bi bi-tags"></i> Clientes</a>
+    <a routerLink="/usuarios" *ngIf="rol=='Administrador'"><i class="bi bi-people"></i> Usuarios</a>
+    <a routerLink="/proveedores" *ngIf="rol=='Administrador'"><i class="bi bi-truck"></i> Proveedores</a>
+    <a routerLink="/reportes" *ngIf="rol=='Administrador'"><i class="bi bi-bar-chart-line"></i> Reportes</a>
+    <a routerLink="/configuracion" *ngIf="rol=='Administrador'"><i class="bi bi-gear"></i> Configuración</a>
 </nav>
 
-
 <div class="sidebar-footer">
-    <a  routerLink="/login" onclick="return confirmarAccion('¿Desea cerrar sesión?')">
-        <span style="color:cadetblue; cursor:pointer;" (click)="cerrar()" class="bi bi-box-arrow-right"></span> Cerrar Sesión
+    <a style="cursor:pointer; color: #e2e8f0; text-decoration: none;" (click)="cerrar()">
+        <span style="color:cadetblue;" class="bi bi-box-arrow-right"></span> Cerrar Sesión
     </a>
 </div>

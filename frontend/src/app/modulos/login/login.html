@@ -1,37 +1,38 @@
 <div class="login-wrapper">
-        <div class="login-card">
-            <div class="brand-icon">
-                <i class="bi bi-bag-fill"></i>
-            </div> 
-            <h3>Sistema de Gestión para Tiendas de Ropa</h3>
-            <p class="subtitle">Ingrese sus credenciales para acceder al sistema</p>
- 
-            <form onsubmit="return confirmarAccion('¿Desea iniciar sesión?') ">
- 
-                
- 
-                <div class="mb-3" >
-                    <label for="correo">Correo Electrónico</label>
-                    <input  type="email" id="email" class="form-control" name="email" placeholder="usuario@ejemplo.com" required  [(ngModel)]="email">
-                </div>
- 
-                <div class="mb-2"  >
-                    <label for="contraseña">Contraseña</label>
-                    <div class="password-field">
-                        <input  type="password" id="contrasena" class="form-control" placeholder="••••••••" required name="contrasena" [(ngModel)]="contrasena">
-                        <button type="button" class="toggle-password" onclick="togglePassword('contrasena', this)">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                </div>
- 
-                <a routerLink="/login" class="forgot-link">¿Olvidó su contraseña?</a>
- 
-                <button type="submit" value="Ingresar" class="btn btn-primary" (click)="consulta('')">Iniciar Sesión</button>
-            </form>
- 
-            <div class="login-footer">
-                SGTR v1.0 · Sistema seguro y confiable
+    <div class="login-card">
+        <div class="brand-icon">
+            <i class="bi bi-bag-fill"></i>
+        </div>
+        <h3>Sistema de Gestión para Tiendas de Ropa</h3>
+        <p class="subtitle">Ingrese sus credenciales para acceder al sistema</p>
+
+        <form>
+            <div class="mb-3">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="email" class="form-control" name="email" placeholder="usuario@ejemplo.com" required [(ngModel)]="email">
+                <span style="color: red;" *ngIf="validar_email == false">Ingresa tu correo electrónico</span>
             </div>
+
+            <div class="mb-2">
+                <label for="contraseña">Contraseña</label>
+                <div class="password-field">
+                    <input type="password" id="contrasena" class="form-control" placeholder="••••••••" required name="contrasena" [(ngModel)]="contrasena">
+                    <button type="button" class="toggle-password" onclick="togglePassword('contrasena', this)">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <span style="color: red;" *ngIf="validar_contrasena == false">Ingresa tu contraseña</span>
+            </div>
+
+            <span style="color: red;" *ngIf="error == true">Correo o contraseña incorrectos</span>
+
+            <a routerLink="/login" class="forgot-link">¿Olvidó su contraseña?</a>
+
+            <button type="submit" value="Ingresar" class="btn btn-primary" (click)="consulta('')">Iniciar Sesión</button>
+        </form>
+
+        <div class="login-footer">
+            SGTR v1.0 · Sistema seguro y confiable
         </div>
     </div>
+</div>
