@@ -6,6 +6,7 @@ import { Compra } from '../../servicios/compra';
 import { Proveedor } from '../../servicios/proveedor';
 import { Usuario } from '../../servicios/usuario';
 import { Producto } from '../../servicios/producto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-compras',
@@ -22,16 +23,15 @@ export class Compras implements OnInit {
   formularioVisible: boolean = false;
 
   terminoBusqueda: string = '';
+  filtroEstado: string = 'Todos';
   compraFiltrada: any = [];
 
   obj_compra: any = {
-   
     id_proveedor: '',
     id_usuario: '',
     detalle: []
   };
 
- 
   validar_proveedor = true;
   validar_usuario = true;
   validar_detalle = true;
@@ -60,19 +60,6 @@ export class Compras implements OnInit {
       },
       error: (err) => console.error('Error al consultar compras:', err)
     });
-  }
-
-  buscarCompra() {
-    const termino = this.terminoBusqueda.toLowerCase().trim();
-
-    if (termino == '') {
-      this.compraFiltrada = this.compra;
-    } else {
-      this.compraFiltrada = this.compra.filter((c: any) =>
-        c.numero_compra.toLowerCase().includes(termino) ||
-        c.nombre_proveedor.toLowerCase().includes(termino)
-      );
-    }
   }
 
   cargarProveedores() {
@@ -117,7 +104,6 @@ export class Compras implements OnInit {
 
   limpiarFormulario() {
     this.obj_compra = {
-     
       id_proveedor: '',
       id_usuario: '',
       detalle: [
@@ -137,7 +123,6 @@ export class Compras implements OnInit {
     }
   }
 
-  // Autocompleta con el precio de COMPRA del producto (no el de venta)
   autocompletarPrecio(linea: any) {
     const productoSeleccionado = this.producto.find(
       (p: any) => p.id_producto == linea.id_producto
@@ -160,8 +145,6 @@ export class Compras implements OnInit {
   }
 
   validar() {
-   
-
     if (this.obj_compra.id_proveedor == "") {
       this.validar_proveedor = false;
     } else {
@@ -184,8 +167,7 @@ export class Compras implements OnInit {
       this.validar_detalle = true;
     }
 
-    if (this.validar_proveedor == true
-      && this.validar_usuario == true && this.validar_detalle == true) {
+    if (this.validar_proveedor == true && this.validar_usuario == true && this.validar_detalle == true) {
       this.guardar();
     }
   }
@@ -196,7 +178,6 @@ export class Compras implements OnInit {
     );
 
     const paramsEnviar = {
-      numero_compra: this.obj_compra.numero_compra,
       id_proveedor: this.obj_compra.id_proveedor,
       id_usuario: this.obj_compra.id_usuario,
       total: this.calcularTotal(),
@@ -213,5 +194,101 @@ export class Compras implements OnInit {
 
     this.formularioVisible = false;
     this.limpiarFormulario();
+  }
+
+  buscarCompra() {
+    this.aplicarFiltros();
+  }
+
+  filtrarPorEstado(estado: string) {
+    this.filtroEstado = estado;
+    this.aplicarFiltros();
+  }
+
+  aplicarFiltros() {
+    const termino = this.terminoBusqueda.toLowerCase().trim();
+
+    this.compraFiltrada = this.compra.filter((c: any) => {
+      const coincideTermino = termino == '' ||
+        c.numero_compra.toLowerCase().includes(termino) ||
+        c.nombre_proveedor.toLowerCase().includes(termino);
+
+      const coincideEstado = this.filtroEstado == 'Todos' || c.estado == this.filtroEstado;
+
+      return coincideTermino && coincideEstado;
+    });
+  }
+
+  formatearMoneda(valor: any): string {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(Number(valor));
+  }
+
+  verDetalle(item: any) {
+    this.scompra.obtenerDetalleCompra(item.id_compra).subscribe((detalle: any) => {
+      let filasHtml = '';
+      detalle.forEach((linea: any) => {
+        filasHtml += `
+          <tr>
+            <td style="text-align:left;">${linea.nombre_producto}</td>
+            <td>${linea.cantidad}</td>
+            <td>${this.formatearMoneda(linea.precio_unitario)}</td>
+            <td>${this.formatearMoneda(linea.subtotal)}</td>
+          </tr>`;
+      });
+
+      const html = `
+        <div style="text-align:left; font-size:14px; margin-bottom:10px;">
+          <strong>N° Compra:</strong> ${item.numero_compra}<br>
+          <strong>Proveedor:</strong> ${item.nombre_proveedor}<br>
+          <strong>Usuario:</strong> ${item.nombre_usuario}<br>
+          <strong>Fecha:</strong> ${item.fecha}
+        </div>
+        <table style="width:100%; font-size:13px; border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:1px solid #ccc;">
+              <th style="text-align:left;">Producto</th>
+              <th>Cant.</th>
+              <th>Precio</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>${filasHtml}</tbody>
+        </table>
+        <div style="text-align:right; margin-top:10px; font-size:14px;">
+          <div><strong>Total: ${this.formatearMoneda(item.total)}</strong></div>
+        </div>
+      `;
+
+      Swal.fire({
+        title: 'Detalle de la compra',
+        html: html,
+        width: 500,
+        confirmButtonText: 'Cerrar'
+      });
+    });
+  }
+
+  cancelarCompra(id: number) {
+    Swal.fire({
+      title: "¿Está seguro de cancelar esta compra?",
+      text: "Esto revertirá el stock que se había sumado.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, cancelar compra",
+      cancelButtonText: "Volver"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.scompra.cancelar(id).subscribe((datos: any) => {
+          if (datos['resultado'] == 'Ok') {
+            this.consulta();
+            Swal.fire({ title: "Compra cancelada!", icon: "success" });
+          } else if (datos['resultado'] == 'Error') {
+            Swal.fire({ title: "Error", text: datos['mensaje'], icon: "error" });
+          }
+        });
+      }
+    });
   }
 }

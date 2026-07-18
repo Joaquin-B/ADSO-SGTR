@@ -57,35 +57,35 @@ export class Dashboard implements OnInit {
   }
 
   cargarVentas() {
-    this.sventa.consulta().subscribe({
-      next: (resultado: any) => {
-        const hoy = new Date().toISOString().split('T')[0];
-        const mesActual = hoy.substring(0, 7);
+  this.sventa.consulta().subscribe({
+    next: (resultado: any) => {
+      const hoy = new Date().toISOString().split('T')[0];
+      const mesActual = hoy.substring(0, 7);
 
-        this.ventasDelMes = resultado
-          .filter((v: any) => v.fecha && v.fecha.startsWith(mesActual))
-          .reduce((acum: number, v: any) => acum + Number(v.total), 0);
+      // Solo contamos ventas completadas, no las canceladas
+      const ventasCompletadas = resultado.filter((v: any) => v.estado === 'Completada');
 
-        this.ordenesHoy = resultado
-          .filter((v: any) => v.fecha && v.fecha.startsWith(hoy)).length;
+      this.ventasDelMes = ventasCompletadas
+        .filter((v: any) => v.fecha && v.fecha.startsWith(mesActual))
+        .reduce((acum: number, v: any) => acum + Number(v.total), 0);
 
-        // Tabla de ventas mensuales (en vez de grafica de linea)
-        const totalesPorMes: { [mes: string]: number } = {};
-        resultado.forEach((v: any) => {
-          if (!v.fecha) return;
-          const mes = v.fecha.substring(0, 7);
-          totalesPorMes[mes] = (totalesPorMes[mes] || 0) + Number(v.total);
-        });
+      this.ordenesHoy = ventasCompletadas
+        .filter((v: any) => v.fecha && v.fecha.startsWith(hoy)).length;
 
-        this.ventasMensuales = Object.keys(totalesPorMes)
-          .sort()
-          .map(mes => ({ mes, total: totalesPorMes[mes] }));
+      const totalesPorMes: { [mes: string]: number } = {};
+      ventasCompletadas.forEach((v: any) => {
+        if (!v.fecha) return;
+        const mes = v.fecha.substring(0, 7);
+        totalesPorMes[mes] = (totalesPorMes[mes] || 0) + Number(v.total);
+      });
 
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error al consultar ventas:', err)
-    });
-  }
+      this.ventasMensuales = Object.keys(totalesPorMes).sort().map(mes => ({ mes, total: totalesPorMes[mes] }));
+
+      this.cdr.detectChanges();
+    },
+    error: (err) => console.error('Error al consultar ventas:', err)
+  });
+}
 
   cargarStockBajo() {
     this.sproducto.productosStockBajo(10).subscribe({

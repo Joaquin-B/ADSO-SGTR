@@ -44,6 +44,30 @@ switch ($control) {
         $id = $_GET['id'];
         $vec = $compra->obtenerDetalleCompra($id);
         break;
+        
+    case 'comprasPorCategoria':
+        $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+        $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+        $vec = $compra->comprasPorCategoria($fecha_inicio, $fecha_fin);
+        break;
+
+    case 'tendenciaCompras':
+        $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+        $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+        $vec = $compra->tendenciaCompras($fecha_inicio, $fecha_fin);
+        break;
+
+    case 'productosMasComprados':
+        $limite = isset($_GET['limite']) ? $_GET['limite'] : 5;
+        $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+        $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+        $vec = $compra->productosMasComprados($limite, $fecha_inicio, $fecha_fin);
+        break;
+
+    case 'cancelar':
+        $id = $_GET['id'];
+        $vec = $compra->cancelar($id);
+        break;
 
     case 'consultaPorUsuario':
         $id_usuario = $_GET['id_usuario'];

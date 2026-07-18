@@ -1,27 +1,48 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Venta } from '../../servicios/venta';
+import { Compra } from '../../servicios/compra';
 
 @Component({
   selector: 'app-reportes',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, FormsModule],
   templateUrl: './reportes.html',
   styleUrl: './reportes.css',
 })
 export class Reportes implements OnInit {
 
-  productosMasVendidos: any = [];
-  totalIngresosTop: number = 0;
+  tipoReporte: string = 'ventas';
+  periodoSeleccionado: string = 'mes';
 
   ventasPorCategoria: any = [];
   tendenciaVentasCostos: any = [];
+  productosMasVendidos: any = [];
+  totalIngresosTop: number = 0;
 
-  periodoSeleccionado: string = 'mes';
+  comprasPorCategoria: any = [];
+  tendenciaCompras: any = [];
+  productosMasComprados: any = [];
+  totalGastosTop: number = 0;
 
-  constructor(private sventa: Venta, private cdr: ChangeDetectorRef) { }
+  // Guardamos la suscripcion activa de cada consulta para poder cancelarla
+  private subVentasCategoria?: Subscription;
+  private subTendenciaVentas?: Subscription;
+  private subProductosVendidos?: Subscription;
+  private subComprasCategoria?: Subscription;
+  private subTendenciaCompras?: Subscription;
+  private subProductosComprados?: Subscription;
+
+  constructor(private sventa: Venta, private scompra: Compra, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+    this.cargarTodo();
+  }
+
+  cambiarTipoReporte(tipo: string) {
+    this.tipoReporte = tipo;
     this.cargarTodo();
   }
 
@@ -32,9 +53,16 @@ export class Reportes implements OnInit {
 
   cargarTodo() {
     const { inicio, fin } = this.calcularRangoFechas(this.periodoSeleccionado);
-    this.cargarVentasPorCategoria(inicio, fin);
-    this.cargarTendencia(inicio, fin);
-    this.cargarProductosMasVendidos(inicio, fin);
+
+    if (this.tipoReporte == 'ventas') {
+      this.cargarVentasPorCategoria(inicio, fin);
+      this.cargarTendenciaVentas(inicio, fin);
+      this.cargarProductosMasVendidos(inicio, fin);
+    } else if (this.tipoReporte == 'compras') {
+      this.cargarComprasPorCategoria(inicio, fin);
+      this.cargarTendenciaCompras(inicio, fin);
+      this.cargarProductosMasComprados(inicio, fin);
+    }
   }
 
   calcularRangoFechas(periodo: string): { inicio: string, fin: string } {
@@ -73,8 +101,11 @@ export class Reportes implements OnInit {
     return `${y}-${m}-${d}`;
   }
 
+  // ---------- VENTAS ----------
+
   cargarVentasPorCategoria(inicio: string, fin: string) {
-    this.sventa.ventasPorCategoria(inicio, fin).subscribe({
+    this.subVentasCategoria?.unsubscribe(); // cancela la peticion anterior si seguia pendiente
+    this.subVentasCategoria = this.sventa.ventasPorCategoria(inicio, fin).subscribe({
       next: (resultado: any) => {
         this.ventasPorCategoria = resultado;
         this.cdr.detectChanges();
@@ -83,8 +114,9 @@ export class Reportes implements OnInit {
     });
   }
 
-  cargarTendencia(inicio: string, fin: string) {
-    this.sventa.tendenciaVentasCostos(inicio, fin).subscribe({
+  cargarTendenciaVentas(inicio: string, fin: string) {
+    this.subTendenciaVentas?.unsubscribe();
+    this.subTendenciaVentas = this.sventa.tendenciaVentasCostos(inicio, fin).subscribe({
       next: (resultado: any) => {
         this.tendenciaVentasCostos = resultado;
         this.cdr.detectChanges();
@@ -94,20 +126,60 @@ export class Reportes implements OnInit {
   }
 
   cargarProductosMasVendidos(inicio: string, fin: string) {
-    this.sventa.productosMasVendidos(5, inicio, fin).subscribe({
+    this.subProductosVendidos?.unsubscribe();
+    this.subProductosVendidos = this.sventa.productosMasVendidos(5, inicio, fin).subscribe({
       next: (resultado: any) => {
         this.totalIngresosTop = resultado.reduce((acum: number, p: any) => acum + Number(p.ingresos), 0);
 
         this.productosMasVendidos = resultado.map((p: any) => ({
           ...p,
-          participacion: this.totalIngresosTop > 0
-            ? (Number(p.ingresos) / this.totalIngresosTop) * 100
-            : 0
+          participacion: this.totalIngresosTop > 0 ? (Number(p.ingresos) / this.totalIngresosTop) * 100 : 0
         }));
 
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al consultar productos mas vendidos:', err)
+    });
+  }
+
+  // ---------- COMPRAS ----------
+
+  cargarComprasPorCategoria(inicio: string, fin: string) {
+    this.subComprasCategoria?.unsubscribe();
+    this.subComprasCategoria = this.scompra.comprasPorCategoria(inicio, fin).subscribe({
+      next: (resultado: any) => {
+        this.comprasPorCategoria = resultado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al consultar compras por categoria:', err)
+    });
+  }
+
+  cargarTendenciaCompras(inicio: string, fin: string) {
+    this.subTendenciaCompras?.unsubscribe();
+    this.subTendenciaCompras = this.scompra.tendenciaCompras(inicio, fin).subscribe({
+      next: (resultado: any) => {
+        this.tendenciaCompras = resultado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al consultar la tendencia de compras:', err)
+    });
+  }
+
+  cargarProductosMasComprados(inicio: string, fin: string) {
+    this.subProductosComprados?.unsubscribe();
+    this.subProductosComprados = this.scompra.productosMasComprados(5, inicio, fin).subscribe({
+      next: (resultado: any) => {
+        this.totalGastosTop = resultado.reduce((acum: number, p: any) => acum + Number(p.gastos), 0);
+
+        this.productosMasComprados = resultado.map((p: any) => ({
+          ...p,
+          participacion: this.totalGastosTop > 0 ? (Number(p.gastos) / this.totalGastosTop) * 100 : 0
+        }));
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al consultar productos mas comprados:', err)
     });
   }
 }

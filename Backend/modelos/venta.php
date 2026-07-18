@@ -45,13 +45,13 @@ class Venta
         $filaNumero = mysqli_fetch_array($resNumero);
 
         if ($filaNumero) {
-            $ultimoNumero = intval(substr($filaNumero['numero_venta'], 2));
+            $ultimoNumero = intval(substr($filaNumero['numero_venta'], 3));
             $siguienteNumero = $ultimoNumero + 1;
         } else {
             $siguienteNumero = 1;
         }
 
-        $numero_venta = 'V-' . str_pad($siguienteNumero, 4, '0', STR_PAD_LEFT);
+        $numero_venta = 'VTA' . str_pad($siguienteNumero, 4, '0', STR_PAD_LEFT);
 
         $producto = new Producto($this->conexion);
 
@@ -185,6 +185,48 @@ class Venta
         while ($row = mysqli_fetch_array($res)) {
             $vec[] = $row;
         }
+        return $vec;
+    }
+
+    public function cancelar($id)
+    {
+        $sqlEstado = "SELECT estado FROM ventas WHERE id_venta = $id";
+        $resEstado = mysqli_query($this->conexion, $sqlEstado);
+        $filaEstado = mysqli_fetch_array($resEstado);
+
+        if ($filaEstado['estado'] == 'Cancelada') {
+            $vec = [];
+            $vec['resultado'] = "Error";
+            $vec['mensaje'] = "Esta venta ya está cancelada";
+            return $vec;
+        }
+
+        $detalleVenta = new DetalleVenta($this->conexion);
+        $lineas = $detalleVenta->consultaPorVenta($id);
+
+        $producto = new Producto($this->conexion);
+
+        $sqlUsuario = "SELECT id_usuario FROM ventas WHERE id_venta = $id";
+        $resUsuario = mysqli_query($this->conexion, $sqlUsuario);
+        $filaUsuario = mysqli_fetch_array($resUsuario);
+        $id_usuario = $filaUsuario['id_usuario'];
+
+        foreach ($lineas as $linea) {
+            // Devolvemos el stock que se habia restado con la venta
+            $producto->actualizarStock($linea['id_producto'], $linea['cantidad']);
+
+            $sqlMov = "INSERT INTO movimientos_inventario (tipo, id_producto, cantidad, id_usuario, referencia, descripcion)
+                   VALUES ('Entrada', {$linea['id_producto']}, {$linea['cantidad']}, $id_usuario, 'Canc. C#$id', 'Reversión por cancelación de venta')";
+            mysqli_query($this->conexion, $sqlMov) or die('No se pudo registrar el movimiento de reversion');
+        }
+
+        $sql = "UPDATE ventas SET estado = 'Cancelada' WHERE id_venta = $id";
+        mysqli_query($this->conexion, $sql) or die('No se pudo cancelar la venta');
+
+        $vec = [];
+        $vec['resultado'] = "Ok";
+        $vec['mensaje'] = "Venta cancelada y stock revertido correctamente";
+
         return $vec;
     }
 }

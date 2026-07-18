@@ -63,13 +63,13 @@ class Compra
         $filaNumero = mysqli_fetch_array($resNumero);
 
         if ($filaNumero) {
-            $ultimoNumero = intval(substr($filaNumero['numero_compra'], 2));
+            $ultimoNumero = intval(substr($filaNumero['numero_compra'], 4));
             $siguienteNumero = $ultimoNumero + 1;
         } else {
             $siguienteNumero = 1;
         }
 
-        $numero_compra = 'C-' . str_pad($siguienteNumero, 4, '0', STR_PAD_LEFT);
+        $numero_compra = 'COMP' . str_pad($siguienteNumero, 4, '0', STR_PAD_LEFT);
 
         $sql = "INSERT INTO compras (numero_compra, id_proveedor, id_usuario, total, estado)
             VALUES ('$numero_compra', $params->id_proveedor, $params->id_usuario, $params->total, 'Completada')";
@@ -132,5 +132,121 @@ class Compra
     {
         $detalleCompra = new DetalleCompra($this->conexion);
         return $detalleCompra->consultaPorCompra($id_compra);
+    }
+
+    public function cancelar($id)
+    {
+        // 1. Verificar que la compra no este ya cancelada
+        $sqlEstado = "SELECT estado FROM compras WHERE id_compra = $id";
+        $resEstado = mysqli_query($this->conexion, $sqlEstado);
+        $filaEstado = mysqli_fetch_array($resEstado);
+
+        if ($filaEstado['estado'] == 'Cancelada') {
+            $vec = [];
+            $vec['resultado'] = "Error";
+            $vec['mensaje'] = "Esta compra ya está cancelada";
+            return $vec;
+        }
+
+        // 2. Traer el detalle de la compra para revertir el stock
+        $detalleCompra = new DetalleCompra($this->conexion);
+        $lineas = $detalleCompra->consultaPorCompra($id);
+
+        $producto = new Producto($this->conexion);
+
+        // 3. Traer id_usuario de la compra (para el movimiento de inventario)
+        $sqlUsuario = "SELECT id_usuario FROM compras WHERE id_compra = $id";
+        $resUsuario = mysqli_query($this->conexion, $sqlUsuario);
+        $filaUsuario = mysqli_fetch_array($resUsuario);
+        $id_usuario = $filaUsuario['id_usuario'];
+
+        foreach ($lineas as $linea) {
+            // Restamos el stock que se habia sumado con la compra
+            $producto->actualizarStock($linea['id_producto'], -$linea['cantidad']);
+
+            // Registramos el movimiento compensatorio
+            $sqlMov = "INSERT INTO movimientos_inventario (tipo, id_producto, cantidad, id_usuario, referencia, descripcion)
+                   VALUES ('Salida', {$linea['id_producto']}, {$linea['cantidad']}, $id_usuario, 'Canc. C#$id', 'Reversión por cancelación de compra')";
+            mysqli_query($this->conexion, $sqlMov) or die('No se pudo registrar el movimiento de reversion');
+        }
+
+        // 4. Cambiar el estado de la compra a Cancelada
+        $sql = "UPDATE compras SET estado = 'Cancelada' WHERE id_compra = $id";
+        mysqli_query($this->conexion, $sql) or die('No se pudo cancelar la compra');
+
+        $vec = [];
+        $vec['resultado'] = "Ok";
+        $vec['mensaje'] = "Compra cancelada y stock revertido correctamente";
+
+        return $vec;
+    }
+
+    public function comprasPorCategoria($fecha_inicio = null, $fecha_fin = null)
+    {
+        $where = "WHERE c.estado = 'Completada'";
+        if ($fecha_inicio && $fecha_fin) {
+            $where .= " AND c.fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'";
+        }
+
+        $sql = "SELECT cat.nombre AS categoria, SUM(dc.subtotal) AS total
+            FROM detalle_compra dc
+            INNER JOIN productos p ON dc.id_producto = p.id_producto
+            INNER JOIN categorias cat ON p.id_categoria = cat.id_categoria
+            INNER JOIN compras c ON dc.id_compra = c.id_compra
+            $where
+            GROUP BY cat.nombre
+            ORDER BY total DESC";
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar las compras por categoria');
+
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
+    }
+
+    public function tendenciaCompras($fecha_inicio = null, $fecha_fin = null)
+    {
+        $where = "WHERE c.estado = 'Completada'";
+        if ($fecha_inicio && $fecha_fin) {
+            $where .= " AND c.fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'";
+        }
+
+        $sql = "SELECT DATE_FORMAT(c.fecha, '%Y-%m') AS mes, SUM(c.total) AS total
+            FROM compras c
+            $where
+            GROUP BY mes
+            ORDER BY mes ASC";
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar la tendencia de compras');
+
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
+    }
+
+    public function productosMasComprados($limite = 5, $fecha_inicio = null, $fecha_fin = null)
+    {
+        $where = "WHERE c.estado = 'Completada'";
+        if ($fecha_inicio && $fecha_fin) {
+            $where .= " AND c.fecha BETWEEN '$fecha_inicio' AND '$fecha_fin'";
+        }
+
+        $sql = "SELECT p.nombre, SUM(dc.cantidad) AS unidades, SUM(dc.subtotal) AS gastos
+            FROM detalle_compra dc
+            INNER JOIN productos p ON dc.id_producto = p.id_producto
+            INNER JOIN compras c ON dc.id_compra = c.id_compra
+            $where
+            GROUP BY p.nombre
+            ORDER BY gastos DESC
+            LIMIT $limite";
+        $res = mysqli_query($this->conexion, $sql) or die('No se pudo consultar los productos mas comprados');
+
+        $vec = [];
+        while ($row = mysqli_fetch_array($res)) {
+            $vec[] = $row;
+        }
+        return $vec;
     }
 }

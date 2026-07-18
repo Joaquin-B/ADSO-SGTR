@@ -57,4 +57,8 @@ export class Venta {
     }
     return this.http.get(url);
   }
+
+  cancelar(id: number) {
+    return this.http.get(`${this.url}?control=cancelar&id=${id}`);
+  }
 }

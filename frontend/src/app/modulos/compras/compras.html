@@ -16,10 +16,8 @@
 </div>
 
 <div class="card mb-3" *ngIf="formularioVisible">
-    
     <div class="card-body">
         <div class="row g-2 mb-2">
-           
             <div class="col-lg-4">
                 <select class="form-control form-select" [(ngModel)]="obj_compra.id_proveedor">
                     <option value="" disabled hidden>Seleccionar Proveedor</option>
@@ -100,15 +98,23 @@
     </div>
 </div>
 
-<div class="card mb-3" style="padding: 14px 16px;">
-    <div class="search-bar">
-        <i class="bi bi-search"></i>
-        <input type="text" class="form-control" placeholder="Buscar por N° compra o proveedor..."
-            [(ngModel)]="terminoBusqueda" (input)="buscarCompra()">
-    </div>
-</div>
-
 <div class="card table-card">
+    <div class="table-card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h5>Historial de Compras</h5>
+        <div class="d-flex gap-2">
+            <div class="search-bar">
+                <i class="bi bi-search"></i>
+                <input type="text" class="form-control form-control-sm" style="width:220px;" placeholder="Buscar por N° compra o proveedor..."
+                    [(ngModel)]="terminoBusqueda" (input)="buscarCompra()">
+            </div>
+            <select class="form-select form-select-sm" style="width:150px;" (change)="filtrarPorEstado($any($event.target).value)">
+                <option value="Todos" selected>Todos los estados</option>
+                <option value="Completada">Completada</option>
+                <option value="Cancelada">Cancelada</option>
+            </select>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table class="table mb-0">
             <thead>
@@ -119,6 +125,7 @@
                     <th>Fecha</th>
                     <th>Total</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -128,7 +135,17 @@
                     <td>{{ item.nombre_usuario }}</td>
                     <td>{{ item.fecha | date:'yyyy-MM-dd' }}</td>
                     <td>{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
-                    <td>{{ item.estado }}</td>
+                    <td>
+                        <span class="badge-pill soft-success" *ngIf="item.estado === 'Completada'">Completada</span>
+                        <span class="badge-pill soft-danger" *ngIf="item.estado === 'Cancelada'">Cancelada</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(item)"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" *ngIf="item.estado === 'Completada'"
+                            (click)="cancelarCompra(item.id_compra)">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </td>
                 </tr>
             </tbody>
         </table>

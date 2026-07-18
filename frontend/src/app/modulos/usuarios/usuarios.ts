@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 export class Usuarios implements OnInit {
   usuario: any;
 
-  formularioVisible: boolean = false;
+  formularioVisible = false;
   id_usuario: any;
 
 

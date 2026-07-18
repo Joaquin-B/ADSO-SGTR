@@ -10,125 +10,181 @@
         <h2>Reportes</h2>
         <p>Análisis y estadísticas del negocio</p>
     </div>
-    <button class="btn btn-primary">
-        <i class="bi bi-download me-1"></i> Descargar Reporte
-    </button>
 </div>
 
 <div class="row g-3 mb-3">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-6">
         <div class="card filter-card">
             <div class="filter-icon blue"><i class="bi bi-file-earmark-text"></i></div>
             <div class="filter-body">
                 <label class="filter-label">Tipo de Reporte</label>
-                <select class="filter-select">
-                    <option selected>Ventas</option>
-                    <option>Inventario</option>
-                    <option>Clientes</option>
-                    <option>Proveedores</option>
+                <select class="filter-select" (change)="cambiarTipoReporte($any($event.target).value)">
+                    <option value="ventas" selected>Ventas</option>
+                    <option value="compras">Compras</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-md-6">
         <div class="card filter-card">
             <div class="filter-icon green"><i class="bi bi-calendar3"></i></div>
             <div class="filter-body">
                 <label class="filter-label">Período</label>
-                <select class="filter-select">
-                    <option>Hoy</option>
-                    <option>Esta Semana</option>
-                    <option selected>Este Mes</option>
-                    <option>Este Año</option>
+                <select class="filter-select" (change)="cambiarPeriodo($any($event.target).value)">
+                    <option value="hoy">Hoy</option>
+                    <option value="semana">Esta Semana</option>
+                    <option value="mes" selected>Este Mes</option>
+                    <option value="anio">Este Año</option>
                 </select>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-12 col-md-4">
-        <div class="card filter-card">
-            <div class="filter-icon purple"><i class="bi bi-graph-up-arrow"></i></div>
-            <div class="filter-body">
-                <label class="filter-label">Crecimiento</label>
-                <div class="filter-value">+18.5%</div>
+<!-- ================= REPORTE DE VENTAS ================= -->
+<div *ngIf="tipoReporte == 'ventas'">
+
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-6">
+            <div class="card chart-card h-100">
+                <h5>Ventas por Categoría</h5>
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Categoría</th><th class="text-end">Total Vendido</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of ventasPorCategoria">
+                            <td>{{ item.categoria }}</td>
+                            <td class="text-end">{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card chart-card h-100">
+                <h5>Tendencia de Ventas vs Costos</h5>
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Mes</th><th class="text-end">Ventas</th><th class="text-end">Costos</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of tendenciaVentasCostos">
+                            <td>{{ item.mes }}</td>
+                            <td class="text-end">{{ item.ventas | currency:'':'symbol':'1.0-0' }}</td>
+                            <td class="text-end">{{ item.costos | currency:'':'symbol':'1.0-0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row g-3 mb-3">
-    <div class="col-12 col-lg-6">
-        <div class="card chart-card h-100">
-            <h5>Ventas por Categoría</h5>
+    <div class="card table-card">
+        <div class="table-card-header">
+            <h5>Productos Más Vendidos</h5>
+        </div>
+        <div class="table-responsive">
             <table class="table mb-0">
                 <thead>
                     <tr>
-                        <th>Categoría</th>
-                        <th class="text-end">Total Vendido</th>
+                        <th>Posición</th>
+                        <th>Producto</th>
+                        <th>Unidades Vendidas</th>
+                        <th>Ingresos</th>
+                        <th class="text-end">Participación</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of ventasPorCategoria">
-                        <td>{{ item.categoria }}</td>
-                        <td class="text-end">{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
+                    <tr *ngFor="let item of productosMasVendidos; let i = index">
+                        <td><span class="rank-badge">{{ i + 1 }}</span></td>
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.unidades }}</td>
+                        <td>{{ item.ingresos | currency:'':'symbol':'1.0-0' }}</td>
+                        <td>
+                            <div class="share-bar-wrap">
+                                <div class="share-bar"><span [style.width.%]="item.participacion"></span></div>
+                                <span>{{ item.participacion | number:'1.1-1' }}%</span>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="col-12 col-lg-6">
-        <div class="card chart-card h-100">
-            <h5>Tendencia de Ventas vs Costos</h5>
+
+</div>
+
+<!-- ================= REPORTE DE COMPRAS ================= -->
+<div *ngIf="tipoReporte == 'compras'">
+
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-6">
+            <div class="card chart-card h-100">
+                <h5>Compras por Categoría</h5>
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Categoría</th><th class="text-end">Total Comprado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of comprasPorCategoria">
+                            <td>{{ item.categoria }}</td>
+                            <td class="text-end">{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card chart-card h-100">
+                <h5>Tendencia de Compras</h5>
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Mes</th><th class="text-end">Total Comprado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of tendenciaCompras">
+                            <td>{{ item.mes }}</td>
+                            <td class="text-end">{{ item.total | currency:'':'symbol':'1.0-0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card table-card">
+        <div class="table-card-header">
+            <h5>Productos Más Comprados</h5>
+        </div>
+        <div class="table-responsive">
             <table class="table mb-0">
                 <thead>
                     <tr>
-                        <th>Mes</th>
-                        <th class="text-end">Ventas</th>
-                        <th class="text-end">Costos</th>
+                        <th>Posición</th>
+                        <th>Producto</th>
+                        <th>Unidades Compradas</th>
+                        <th>Gastos</th>
+                        <th class="text-end">Participación</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let item of tendenciaVentasCostos">
-                        <td>{{ item.mes }}</td>
-                        <td class="text-end">{{ item.ventas | currency:'':'symbol':'1.0-0' }}</td>
-                        <td class="text-end">{{ item.costos | currency:'':'symbol':'1.0-0' }}</td>
+                    <tr *ngFor="let item of productosMasComprados; let i = index">
+                        <td><span class="rank-badge">{{ i + 1 }}</span></td>
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.unidades }}</td>
+                        <td>{{ item.gastos | currency:'':'symbol':'1.0-0' }}</td>
+                        <td>
+                            <div class="share-bar-wrap">
+                                <div class="share-bar"><span [style.width.%]="item.participacion"></span></div>
+                                <span>{{ item.participacion | number:'1.1-1' }}%</span>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
 
-<div class="card table-card">
-    <div class="table-card-header">
-        <h5>Productos Más Vendidos</h5>
-    </div>
-    <div class="table-responsive">
-        <table class="table mb-0">
-            <thead>
-                <tr>
-                    <th>Posición</th>
-                    <th>Producto</th>
-                    <th>Unidades Vendidas</th>
-                    <th>Ingresos</th>
-                    <th class="text-end">Participación</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of productosMasVendidos; let i = index">
-                    <td><span class="rank-badge">{{ i + 1 }}</span></td>
-                    <td>{{ item.nombre }}</td>
-                    <td>{{ item.unidades }}</td>
-                    <td>{{ item.ingresos | currency:'':'symbol':'1.0-0' }}</td>
-                    <td>
-                        <div class="share-bar-wrap">
-                            <div class="share-bar"><span [style.width.%]="item.participacion"></span></div>
-                            <span>{{ item.participacion | number:'1.1-1' }}%</span>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 </div>

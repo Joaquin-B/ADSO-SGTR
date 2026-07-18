@@ -100,7 +100,7 @@
                     <th>Nombre</th>
                     <th>Apellidos</th>
                     <th>Rol</th>
-                    <th>Estado</th>
+                    <th>telefono</th>
                     <th>Fecha Registro</th>
                     <th>Acciones</th>
                 </tr>
@@ -110,10 +110,7 @@
                     <td>{{item.nombres}}</td>
                     <td>{{item.apellidos}}</td>
                     <td>{{item.rol}}</td>
-                    <td>
-                        <span class="badge-pill soft-success" *ngIf="item.estado == 1">Activo</span>
-                        <span class="badge-pill soft-danger" *ngIf="item.estado == 0">Inactivo</span>
-                    </td>
+                     <td>{{item.telefono}}</td>
                     <td>{{item.fecha_registro | date:'yyyy-MM-dd HH:mm'}}</td>
                     <td>
                         <button class="icon-btn" (click)="cargar_datos(item, item.id_usuario)">

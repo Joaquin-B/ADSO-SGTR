@@ -47,9 +47,15 @@ switch ($control) {
     case 'ventasPorCategoria':
         $vec = $venta->ventasPorCategoria();
         break;
+        
     case 'productosMasVendidos':
         $limite = isset($_GET['limite']) ? $_GET['limite'] : 5;
         $vec = $venta->productosMasVendidos($limite);
+        break;
+
+    case 'cancelar':
+        $id = $_GET['id'];
+        $vec = $venta->cancelar($id);
         break;
 
     case 'tendenciaVentasCostos':

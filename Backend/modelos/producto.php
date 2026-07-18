@@ -78,7 +78,8 @@ class Producto
                     color = '$params->color',
                     material = '$params->material',
                     precio_compra = $params->precio_compra,
-                    precio_venta = $params->precio_venta
+                    precio_venta = $params->precio_venta,
+                    stock = $params->stock
                 WHERE id_producto = $id";
 
         mysqli_query($this->conexion, $sql) or die('No se pudo editar el producto');

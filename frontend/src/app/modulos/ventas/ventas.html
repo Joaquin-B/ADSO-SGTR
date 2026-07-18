@@ -16,10 +16,10 @@
 </div>
 
 <div class="card mb-3" *ngIf="formularioVisible">
-   
+
     <div class="card-body">
         <div class="row g-2 mb-2">
-           
+
             <div class="col-lg-3">
                 <select class="form-control form-select" [(ngModel)]="obj_venta.id_cliente">
                     <option value="" disabled hidden>Seleccionar Cliente</option>
@@ -65,7 +65,8 @@
                         <select class="form-control form-select" [(ngModel)]="linea.id_producto"
                             (change)="autocompletarPrecio(linea)">
                             <option value="" disabled hidden>Seleccionar Producto</option>
-                            <option *ngFor="let p of producto" [value]="p.id_producto">{{ p.nombre }} (Stock: {{ p.stock }})</option>
+                            <option *ngFor="let p of producto" [value]="p.id_producto">{{ p.nombre }} (Stock: {{ p.stock
+                                }})</option>
                         </select>
                     </td>
                     <td>
@@ -103,7 +104,8 @@
             </div>
             <div class="col-lg-4">
                 <label>Total</label>
-                <div class="form-control">{{ (calcularSubtotalTotal() - (obj_venta.descuento || 0)) | currency:'':'symbol':'1.0-0' }}</div>
+                <div class="form-control">{{ (calcularSubtotalTotal() - (obj_venta.descuento || 0)) |
+                    currency:'':'symbol':'1.0-0' }}</div>
             </div>
         </div>
 
@@ -159,7 +161,7 @@
                 <div class="kpi-icon orders"><i class="bi bi-x-circle"></i></div>
             </div>
             <div class="kpi-value">{{ ventasCanceladas }}</div>
-            <div class="kpi-delta">en el historial</div>
+            <div class="kpi-delta">canceladas este mes</div>
         </div>
     </div>
 </div>
@@ -170,12 +172,15 @@
         <div class="d-flex gap-2">
             <div class="search-bar">
                 <i class="bi bi-search"></i>
-                <input type="text" class="form-control form-control-sm" style="width:220px;" placeholder="Buscar por cliente o N° venta...">
+                <input type="text" class="form-control form-control-sm" style="width:220px;"
+                    placeholder="Buscar por cliente o N° venta..." [(ngModel)]="terminoBusqueda"
+                    (input)="buscarVenta()">
             </div>
-            <select class="form-select form-select-sm" style="width:150px;">
-                <option selected>Todos los estados</option>
-                <option>Completada</option>
-                <option>Cancelada</option>
+            <select class="form-select form-select-sm" style="width:150px;"
+                (change)="filtrarPorEstado($any($event.target).value)">
+                <option value="Todos" selected>Todos los estados</option>
+                <option value="Completada">Completada</option>
+                <option value="Cancelada">Cancelada</option>
             </select>
         </div>
     </div>
@@ -194,7 +199,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let item of venta">
+                <tr *ngFor="let item of ventaFiltrada">
                     <td>{{ item.numero_venta }}</td>
                     <td>{{ item.nombre_cliente }}</td>
                     <td>{{ item.nombre_usuario }}</td>
@@ -205,8 +210,14 @@
                         <span class="badge-pill soft-danger" *ngIf="item.estado === 'Cancelada'">Cancelada</span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-printer"></i></button>
+                        <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(item)"><i
+                                class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-primary" (click)="imprimirVenta(item)"><i
+                                class="bi bi-printer"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" *ngIf="item.estado === 'Completada'"
+                            (click)="cancelarVenta(item.id_venta)">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
                     </td>
                 </tr>
             </tbody>
