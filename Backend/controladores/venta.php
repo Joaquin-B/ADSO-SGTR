@@ -45,12 +45,16 @@ switch ($control) {
         $vec = $venta->obtenerDetalleVenta($id);
         break;
     case 'ventasPorCategoria':
-        $vec = $venta->ventasPorCategoria();
+        $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+        $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+        $vec = $venta->ventasPorCategoria($fecha_inicio, $fecha_fin);
         break;
-        
+
     case 'productosMasVendidos':
         $limite = isset($_GET['limite']) ? $_GET['limite'] : 5;
-        $vec = $venta->productosMasVendidos($limite);
+        $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+        $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+        $vec = $venta->productosMasVendidos($limite, $fecha_inicio, $fecha_fin);
         break;
 
     case 'cancelar':
@@ -59,7 +63,9 @@ switch ($control) {
         break;
 
     case 'tendenciaVentasCostos':
-        $vec = $venta->tendenciaVentasCostos();
+        $fecha_inicio = isset($_GET['fecha_inicio']) ? $_GET['fecha_inicio'] : null;
+        $fecha_fin = isset($_GET['fecha_fin']) ? $_GET['fecha_fin'] : null;
+        $vec = $venta->tendenciaVentasCostos($fecha_inicio, $fecha_fin);
         break;
     default:
         $vec = ['error' => 'Controlador no valido'];
