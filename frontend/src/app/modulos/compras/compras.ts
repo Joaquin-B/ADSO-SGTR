@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 export class Compras implements OnInit {
   compra: any;
   proveedor: any = [];
-  usuario: any = [];
+  nombreUsuario: string = '';
   producto: any = [];
 
   formularioVisible: boolean = false;
@@ -47,7 +47,7 @@ export class Compras implements OnInit {
   ngOnInit(): void {
     this.consulta();
     this.cargarProveedores();
-    this.cargarUsuarios();
+    this.nombreUsuario = sessionStorage.getItem('nombres') + ' ' + sessionStorage.getItem('apellidos');
     this.cargarProductos();
   }
 
@@ -72,15 +72,7 @@ export class Compras implements OnInit {
     });
   }
 
-  cargarUsuarios() {
-    this.susuario.consulta().subscribe({
-      next: (resultado: any) => {
-        this.usuario = resultado;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error al consultar usuarios:', err)
-    });
-  }
+
 
   cargarProductos() {
     this.sproducto.consulta().subscribe({
@@ -105,7 +97,7 @@ export class Compras implements OnInit {
   limpiarFormulario() {
     this.obj_compra = {
       id_proveedor: '',
-      id_usuario: '',
+      id_usuario: sessionStorage.getItem('id'),
       detalle: [
         { id_producto: '', cantidad: null, precio_unitario: null }
       ]
@@ -149,12 +141,6 @@ export class Compras implements OnInit {
       this.validar_proveedor = false;
     } else {
       this.validar_proveedor = true;
-    }
-
-    if (this.obj_compra.id_usuario == "") {
-      this.validar_usuario = false;
-    } else {
-      this.validar_usuario = true;
     }
 
     const detalleValido = this.obj_compra.detalle.some(

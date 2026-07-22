@@ -26,11 +26,8 @@
                 <span style="color: red;" *ngIf="validar_proveedor == false">Seleccionar Proveedor</span>
             </div>
             <div class="col-lg-4">
-                <select class="form-control form-select" [(ngModel)]="obj_compra.id_usuario">
-                    <option value="" disabled hidden>Seleccionar Usuario</option>
-                    <option *ngFor="let u of usuario" [value]="u.id_usuario">{{ u.nombres }} {{ u.apellidos }}</option>
-                </select>
-                <span style="color: red;" *ngIf="validar_usuario == false">Seleccionar Usuario</span>
+                <label>Usuario</label>
+                <input type="text" class="form-control" [value]="nombreUsuario" disabled>
             </div>
         </div>
 
@@ -104,10 +101,12 @@
         <div class="d-flex gap-2">
             <div class="search-bar">
                 <i class="bi bi-search"></i>
-                <input type="text" class="form-control form-control-sm" style="width:220px;" placeholder="Buscar por N° compra o proveedor..."
-                    [(ngModel)]="terminoBusqueda" (input)="buscarCompra()">
+                <input type="text" class="form-control form-control-sm" style="width:220px;"
+                    placeholder="Buscar por N° compra o proveedor..." [(ngModel)]="terminoBusqueda"
+                    (input)="buscarCompra()">
             </div>
-            <select class="form-select form-select-sm" style="width:150px;" (change)="filtrarPorEstado($any($event.target).value)">
+            <select class="form-select form-select-sm" style="width:150px;"
+                (change)="filtrarPorEstado($any($event.target).value)">
                 <option value="Todos" selected>Todos los estados</option>
                 <option value="Completada">Completada</option>
                 <option value="Cancelada">Cancelada</option>
@@ -140,7 +139,8 @@
                         <span class="badge-pill soft-danger" *ngIf="item.estado === 'Cancelada'">Cancelada</span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(item)"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-primary" (click)="verDetalle(item)"><i
+                                class="bi bi-eye"></i></button>
                         <button class="btn btn-sm btn-outline-danger" *ngIf="item.estado === 'Completada'"
                             (click)="cancelarCompra(item.id_compra)">
                             <i class="bi bi-x-circle"></i>

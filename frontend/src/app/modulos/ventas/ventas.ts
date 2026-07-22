@@ -17,7 +17,7 @@ import Swal from 'sweetalert2';
 export class Ventas implements OnInit {
   venta: any;
   cliente: any = [];
-  usuario: any = [];
+  nombreVendedor: string = '';
   producto: any = [];
 
   formularioVisible: boolean = false;
@@ -57,8 +57,8 @@ export class Ventas implements OnInit {
 
   ngOnInit(): void {
     this.consulta();
+    this.nombreVendedor = sessionStorage.getItem('nombres') + ' ' + sessionStorage.getItem('apellidos');
     this.cargarClientes();
-    this.cargarUsuarios();
     this.cargarProductos();
   }
 
@@ -113,7 +113,7 @@ export class Ventas implements OnInit {
     this.ticketPromedio = ventasCompletadas.length > 0
       ? ventasCompletadas.reduce((acum: number, v: any) => acum + Number(v.total), 0) / ventasCompletadas.length
       : 0;
-    
+
     this.ventasCanceladas = ventas.filter((v: any) =>
       v.estado === 'Cancelada' && v.fecha && v.fecha.startsWith(mesActual)
     ).length;
@@ -129,15 +129,7 @@ export class Ventas implements OnInit {
     });
   }
 
-  cargarUsuarios() {
-    this.susuario.consulta().subscribe({
-      next: (resultado: any) => {
-        this.usuario = resultado;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error al consultar usuarios:', err)
-    });
-  }
+
 
   cargarProductos() {
     this.sproducto.consulta().subscribe({
@@ -163,7 +155,7 @@ export class Ventas implements OnInit {
     this.obj_venta = {
       numero_venta: '',
       id_cliente: '',
-      id_usuario: '',
+      id_usuario: sessionStorage.getItem('id'),
       metodo_pago: '',
       descuento: 0,
       detalle: [
@@ -211,12 +203,6 @@ export class Ventas implements OnInit {
       this.validar_cliente = false;
     } else {
       this.validar_cliente = true;
-    }
-
-    if (this.obj_venta.id_usuario == "") {
-      this.validar_usuario = false;
-    } else {
-      this.validar_usuario = true;
     }
 
     if (this.obj_venta.metodo_pago == "") {

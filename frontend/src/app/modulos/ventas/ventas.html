@@ -27,12 +27,9 @@
                 </select>
                 <span style="color: red;" *ngIf="validar_cliente == false">Seleccionar Cliente</span>
             </div>
-            <div class="col-lg-3">
-                <select class="form-control form-select" [(ngModel)]="obj_venta.id_usuario">
-                    <option value="" disabled hidden>Seleccionar Vendedor</option>
-                    <option *ngFor="let u of usuario" [value]="u.id_usuario">{{ u.nombres }} {{ u.apellidos }}</option>
-                </select>
-                <span style="color: red;" *ngIf="validar_usuario == false">Seleccionar Vendedor</span>
+            <div class="col-lg-4">
+                <label>Vendedor</label>
+                <input type="text" class="form-control" [value]="nombreVendedor" disabled>
             </div>
             <div class="col-lg-3">
                 <select class="form-control form-select" [(ngModel)]="obj_venta.metodo_pago">

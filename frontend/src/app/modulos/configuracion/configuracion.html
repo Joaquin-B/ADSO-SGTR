@@ -4,81 +4,60 @@
         <li class="breadcrumb-item active">Configuración</li>
     </ol>
 </nav>
- 
+
 <div class="page-header">
     <h2>Configuración</h2>
     <p>Administre las preferencias y datos generales del sistema</p>
 </div>
- 
 
 <div class="row g-3">
- 
+
     <div class="col-12 col-lg-7">
- 
+
         <div class="card settings-card mb-3">
             <h5>Perfil de la Tienda</h5>
             <p class="settings-desc">Información general que aparece en comprobantes y reportes</p>
- 
+
             <div class="row g-3">
                 <div class="col-12 col-sm-8">
                     <label>Nombre de la Tienda</label>
-                    <input type="text" class="form-control" value="Tienda de Ropa SGTR">
+                    <input type="text" class="form-control" [(ngModel)]="obj_config.nombre_tienda">
                 </div>
                 <div class="col-12 col-sm-4">
                     <label>NIT</label>
-                    <input type="text" class="form-control" value="900.123.456-7">
+                    <input type="text" class="form-control" [(ngModel)]="obj_config.nit">
                 </div>
                 <div class="col-12 col-sm-6">
                     <label>Correo de Contacto</label>
-                    <input type="email" class="form-control" value="contacto@sgtr.com">
+                    <input type="email" class="form-control" [(ngModel)]="obj_config.email">
                 </div>
                 <div class="col-12 col-sm-6">
                     <label>Teléfono</label>
-                    <input type="text" class="form-control" value="+1 234 567 8900">
+                    <input type="text" class="form-control" [(ngModel)]="obj_config.telefono">
                 </div>
                 <div class="col-12 col-sm-8">
                     <label>Dirección</label>
-                    <input type="text" class="form-control" value="Cra 10 #20-30, Ciudad">
+                    <input type="text" class="form-control" [(ngModel)]="obj_config.direccion">
                 </div>
                 <div class="col-12 col-sm-4">
                     <label>Moneda</label>
-                    <select class="form-select">
-                        <option selected>COP — Peso Colombiano</option>
-                        <option>USD — Dólar</option>
-                        <option>MXN — Peso Mexicano</option>
+                    <select class="form-select" [(ngModel)]="obj_config.moneda">
+                        <option value="COP">COP — Peso Colombiano</option>
+                        <option value="USD">USD — Dólar</option>
+                        <option value="MXN">MXN — Peso Mexicano</option>
                     </select>
                 </div>
             </div>
         </div>
- 
-        <div class="card settings-card mb-3">
-            <h5>Seguridad</h5>
-            <p class="settings-desc">Actualice su contraseña de acceso</p>
- 
-            <div class="row g-3">
-                <div class="col-12">
-                    <label>Contraseña Actual</label>
-                    <input type="password" class="form-control" placeholder="••••••••">
-                </div>
-                <div class="col-12 col-sm-6">
-                    <label>Nueva Contraseña</label>
-                    <input type="password" class="form-control" placeholder="••••••••">
-                </div>
-                <div class="col-12 col-sm-6">
-                    <label>Confirmar Contraseña</label>
-                    <input type="password" class="form-control" placeholder="••••••••">
-                </div>
-            </div>
-        </div>
- 
+
     </div>
- 
+
     <div class="col-12 col-lg-5">
- 
+
         <div class="card settings-card mb-3">
             <h5>Notificaciones</h5>
             <p class="settings-desc">Elija cuándo quiere recibir avisos del sistema</p>
- 
+
             <div class="settings-row">
                 <div>
                     <div class="settings-row-label">Alertas de stock bajo</div>
@@ -88,7 +67,7 @@
                     <input class="form-check-input" type="checkbox" role="switch" checked>
                 </div>
             </div>
- 
+
             <div class="settings-row">
                 <div>
                     <div class="settings-row-label">Resumen diario por correo</div>
@@ -98,7 +77,7 @@
                     <input class="form-check-input" type="checkbox" role="switch" checked>
                 </div>
             </div>
- 
+
             <div class="settings-row">
                 <div>
                     <div class="settings-row-label">Nuevas órdenes</div>
@@ -109,32 +88,24 @@
                 </div>
             </div>
         </div>
- 
+
         <div class="card settings-card">
             <h5>Preferencias del Sistema</h5>
             <p class="settings-desc">Ajustes generales de la aplicación</p>
- 
-            <div class="mb-3">
-                <label>Idioma</label>
-                <select class="form-select">
-                    <option selected>Español</option>
-                    <option>English</option>
-                </select>
-            </div>
- 
+
             <div class="mb-1">
                 <label>IVA por Defecto (%)</label>
-                <input type="number" class="form-control" value="19">
+                <input type="number" class="form-control" [(ngModel)]="obj_config.iva">
             </div>
         </div>
- 
+
     </div>
- 
+
 </div>
- 
+
 <div class="d-flex justify-content-end gap-2 mt-3">
-    <button class="btn btn-outline-primary">Cancelar</button>
-    <button class="btn btn-primary" onclick="return confirmarAccion('¿Desea guardar los cambios?')">
+    <button class="btn btn-outline-primary" (click)="cancelar()">Cancelar</button>
+    <button class="btn btn-primary" (click)="guardar()">
         <i class="bi bi-check2-circle me-1"></i> Guardar Cambios
     </button>
 </div>
