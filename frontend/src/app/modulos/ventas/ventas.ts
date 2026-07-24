@@ -6,6 +6,7 @@ import { Venta } from '../../servicios/venta';
 import { Cliente } from '../../servicios/cliente';
 import { Usuario } from '../../servicios/usuario';
 import { Producto } from '../../servicios/producto';
+import { ConfiguracionServicio } from '../../servicios/configuracion';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -19,6 +20,7 @@ export class Ventas implements OnInit {
   cliente: any = [];
   nombreVendedor: string = '';
   producto: any = [];
+  datosTienda: any = {};
 
   formularioVisible: boolean = false;
 
@@ -52,6 +54,7 @@ export class Ventas implements OnInit {
     private scliente: Cliente,
     private susuario: Usuario,
     private sproducto: Producto,
+    private sconfig: ConfiguracionServicio,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -60,6 +63,7 @@ export class Ventas implements OnInit {
     this.nombreVendedor = sessionStorage.getItem('nombres') + ' ' + sessionStorage.getItem('apellidos');
     this.cargarClientes();
     this.cargarProductos();
+    this.cargarConfiguracion();
   }
 
   consulta() {
@@ -253,6 +257,16 @@ export class Ventas implements OnInit {
     this.limpiarFormulario();
   }
 
+  cargarConfiguracion() {
+    this.sconfig.consulta().subscribe({
+      next: (resultado: any) => {
+        this.datosTienda = resultado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al consultar la configuracion:', err)
+    });
+  }
+
 
   verDetalle(item: any) {
     this.sventa.obtenerDetalleVenta(item.id_venta).subscribe((detalle: any) => {
@@ -268,10 +282,15 @@ export class Ventas implements OnInit {
       });
 
       const html = `
+      <div style="text-align:left; font-size:13px; margin-bottom:10px; color:#666;">
+        <strong>${this.datosTienda.nombre_tienda}</strong> · NIT: ${this.datosTienda.nit}<br>
+        ${this.datosTienda.direccion} · Tel: ${this.datosTienda.telefono}
+      </div>
+      <hr>
       <div style="text-align:left; font-size:14px; margin-bottom:10px;">
         <strong>N° Venta:</strong> ${item.numero_venta}<br>
         <strong>Cliente:</strong> ${item.nombre_cliente}<br>
-        <strong>Vendedor:</strong> ${item.nombre_usuario}<br>
+        <strong>Vendedor:</strong> ${item.nombre_usuario} ${item.apellido_usuario}<br>
         <strong>Fecha:</strong> ${item.fecha}<br>
         <strong>Método de pago:</strong> ${item.metodo_pago}
       </div>
@@ -329,16 +348,22 @@ export class Ventas implements OnInit {
           th, td { padding: 6px; border-bottom: 1px solid #ddd; font-size: 13px; }
           th { text-align: left; background: #f4f4f4; }
           .totales { text-align: right; margin-top: 15px; font-size: 14px; }
+          .encabezado { text-align: center; margin-bottom: 15px; }
+          .encabezado small { color: #666; }
         </style>
       </head>
       <body>
-        <h2>SGTR - Recibo de Venta</h2>
+        <div class="encabezado">
+          <h2>${this.datosTienda.nombre_tienda}</h2>
+          <small>NIT: ${this.datosTienda.nit} · ${this.datosTienda.direccion}<br>
+          Tel: ${this.datosTienda.telefono} · ${this.datosTienda.email}</small>
+        </div>
+        <hr>
         <p><strong>N° Venta:</strong> ${item.numero_venta}</p>
         <p><strong>Cliente:</strong> ${item.nombre_cliente}</p>
-        <p><strong>Vendedor:</strong> ${item.nombre_usuario}</p>
+        <p><strong>Vendedor:</strong> ${item.nombre_usuario} ${item.apellido_usuario}</p>
         <p><strong>Fecha:</strong> ${item.fecha}</p>
         <p><strong>Método de pago:</strong> ${item.metodo_pago}</p>
-
         <table>
           <thead>
             <tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr>

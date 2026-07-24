@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Compra } from '../../servicios/compra';
 import { Proveedor } from '../../servicios/proveedor';
-import { Usuario } from '../../servicios/usuario';
 import { Producto } from '../../servicios/producto';
+import { ConfiguracionServicio } from '../../servicios/configuracion';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -19,6 +19,7 @@ export class Compras implements OnInit {
   proveedor: any = [];
   nombreUsuario: string = '';
   producto: any = [];
+  datosTienda: any = {};
 
   formularioVisible: boolean = false;
 
@@ -39,14 +40,15 @@ export class Compras implements OnInit {
   constructor(
     private scompra: Compra,
     private sproveedor: Proveedor,
-    private susuario: Usuario,
     private sproducto: Producto,
+    private sconfig: ConfiguracionServicio,
     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
     this.consulta();
     this.cargarProveedores();
+    this.cargarConfiguracion();
     this.nombreUsuario = sessionStorage.getItem('nombres') + ' ' + sessionStorage.getItem('apellidos');
     this.cargarProductos();
   }
@@ -102,6 +104,16 @@ export class Compras implements OnInit {
         { id_producto: '', cantidad: null, precio_unitario: null }
       ]
     };
+  }
+
+  cargarConfiguracion() {
+    this.sconfig.consulta().subscribe({
+      next: (resultado: any) => {
+        this.datosTienda = resultado;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al consultar la configuracion:', err)
+    });
   }
 
   agregarLinea() {
@@ -223,7 +235,12 @@ export class Compras implements OnInit {
       });
 
       const html = `
-        <div style="text-align:left; font-size:14px; margin-bottom:10px;">
+        <div style="text-align:left; font-size:13px; margin-bottom:10px; color:#666;">
+          <strong>${this.datosTienda.nombre_tienda}</strong> · NIT: ${this.datosTienda.nit}<br>
+          ${this.datosTienda.direccion} · Tel: ${this.datosTienda.telefono}
+        </div> 
+      <hr>
+      <div style="text-align:left; font-size:14px; margin-bottom:10px;">
           <strong>N° Compra:</strong> ${item.numero_compra}<br>
           <strong>Proveedor:</strong> ${item.nombre_proveedor}<br>
           <strong>Usuario:</strong> ${item.nombre_usuario}<br>

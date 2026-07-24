@@ -10,7 +10,7 @@ class Venta
 
     public function consulta()
     {
-        $sql = "SELECT v.*, c.nombre AS nombre_cliente, u.nombres AS nombre_usuario
+        $sql = "SELECT v.*, c.nombre AS nombre_cliente, u.nombres AS nombre_usuario, u.apellidos AS apellido_usuario
                 FROM ventas v
                 INNER JOIN clientes c ON v.id_cliente = c.id_cliente
                 INNER JOIN usuarios u ON v.id_usuario = u.id_usuario
@@ -26,7 +26,7 @@ class Venta
 
     public function buscarPorId($id)
     {
-        $sql = "SELECT v.*, c.nombre AS nombre_cliente, u.nombres AS nombre_usuario
+        $sql = "SELECT v.*, c.nombre AS nombre_cliente, u.nombres AS nombre_usuario, u.apellidos AS apellido_usuario
                 FROM ventas v
                 INNER JOIN clientes c ON v.id_cliente = c.id_cliente
                 INNER JOIN usuarios u ON v.id_usuario = u.id_usuario
