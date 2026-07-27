@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,15 +6,18 @@ import { Injectable } from '@angular/core';
 })
 export class ConfiguracionServicio {
 
-  url = "http://localhost/sgtr/Backend/controladores/configuracion.php";
+  
+
+   //url = "http://localhost/sgtr/Backend/controladores/configuracion.php";
+  url = "http://www.sgtr.com.mialias.net/Backend/controladores/configuracion.php";
 
   constructor(private http: HttpClient) { };
 
-  consulta(){
+  consulta() {
     return this.http.get(`${this.url}?control=consulta`);
   }
 
-  editar(params: any){
+  editar(params: any) {
     return this.http.post(`${this.url}?control=editar`, JSON.stringify(params));
   }
 }

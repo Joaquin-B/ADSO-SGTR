@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,19 +6,22 @@ import { Injectable } from '@angular/core';
 })
 export class Inventario {
 
-  url = "http://localhost/sgtr/Backend/controladores/inventario.php";
+  
+
+ // url = "http://localhost/sgtr/Backend/controladores/inventario.php";
+   url = "http://www.sgtr.com.mialias.net/Backend/controladores/inventario.php";
 
   constructor(private http: HttpClient) { };
 
-  consulta(){
+  consulta() {
     return this.http.get(`${this.url}?control=consulta`);
   }
 
-  consultaPorProducto(id_producto: number){
+  consultaPorProducto(id_producto: number) {
     return this.http.get(`${this.url}?control=consultaPorProducto&id_producto=${id_producto}`);
   }
 
-  consultaPorFecha(fecha_inicio: string, fecha_fin: string){
+  consultaPorFecha(fecha_inicio: string, fecha_fin: string) {
     return this.http.get(`${this.url}?control=consultaPorFecha&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`);
   }
 }

@@ -13,6 +13,7 @@ import { Inventario } from './modulos/inventario/inventario';
 import { Compras } from './modulos/compras/compras';
 import { NoEncontro } from './modulos/no-encontro/no-encontro';
 import { validaruserGuard } from './guard/validaruser-guard';
+import { Recuperar } from './modulos/recuperar/recuperar';
 
 export const routes: Routes = [
     {
@@ -33,5 +34,6 @@ export const routes: Routes = [
     },
 
     {  path: 'login', component: Login  },
+     { path: 'recuperar-password', component: Recuperar },
     { path: "**", component: NoEncontro}
 ];

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 })
 export class Usuario {
 
-  url = "http://localhost/sgtr/Backend/controladores/usuario.php";
-
+ // url = "http://localhost/sgtr/Backend/controladores/usuario.php";
+  url = "http://www.sgtr.com.mialias.net/Backend/controladores/usuario.php";
   constructor(private http: HttpClient) { };
 
   consulta() {
@@ -32,5 +32,9 @@ export class Usuario {
 
   cambiarPassword(id: number, params: any) {
     return this.http.post(`${this.url}?control=cambiarPassword&id=${id}`, JSON.stringify(params));
+  }
+
+  recuperarPassword(email: string, nueva_contrasena: string) {
+    return this.http.post(`${this.url}?control=recuperarPassword`, JSON.stringify({ email, nueva_contrasena }));
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -6,7 +6,10 @@ import { Injectable } from '@angular/core';
 })
 export class Cliente {
 
-  url = "http://localhost/sgtr/Backend/controladores/cliente.php";
+ 
+
+  // url = "http://localhost/sgtr/Backend/controladores/cliente.php";
+ url = "http://www.sgtr.com.mialias.net/Backend/controladores/cliente.php";
 
   constructor(private http: HttpClient) { };
 

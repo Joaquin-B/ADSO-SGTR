@@ -1,0 +1,35 @@
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="brand-icon">
+            <i class="bi bi-key-fill"></i>
+        </div>
+        <h3>Recuperar Contraseña</h3>
+        <p class="subtitle">Ingresa tu email y elige una nueva contraseña</p>
+
+        <div class="mb-3">
+            <label>Correo Electrónico</label>
+            <input type="email" class="form-control" placeholder="usuario@ejemplo.com" [(ngModel)]="email">
+            <span style="color: red;" *ngIf="validar_email == false">Ingresa tu correo electrónico</span>
+        </div>
+
+        <div class="mb-3">
+            <label>Nueva Contraseña</label>
+            <input type="password" class="form-control" placeholder="••••••••" [(ngModel)]="nueva_contrasena">
+            <span style="color: red;" *ngIf="validar_contrasena == false">Ingresa la nueva contraseña</span>
+        </div>
+
+        <div class="mb-2">
+            <label>Confirmar Contraseña</label>
+            <input type="password" class="form-control" placeholder="••••••••" [(ngModel)]="confirmar_contrasena">
+            <span style="color: red;" *ngIf="validar_confirmar == false">Las contraseñas no coinciden</span>
+        </div>
+
+        <a routerLink="/login" class="forgot-link">Volver al inicio de sesión</a>
+
+        <button class="btn btn-primary w-100" (click)="validar()">Actualizar Contraseña</button>
+
+        <div class="login-footer">
+            SGTR v1.0 · Sistema seguro y confiable
+        </div>
+    </div>
+</div>

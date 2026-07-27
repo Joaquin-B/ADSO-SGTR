@@ -44,6 +44,11 @@ switch ($control) {
         $params = json_decode($json);
         $vec = $usuario->cambiarPassword($id, $params);
         break;
+    case 'recuperarPassword':
+        $json = file_get_contents('php://input');
+        $params = json_decode($json);
+        $vec = $usuario->recuperarPassword($params->email, $params->nueva_contrasena);
+        break;
 
     default:
         $vec = ['error' => 'Controlador no valido'];

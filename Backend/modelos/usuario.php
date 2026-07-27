@@ -94,7 +94,21 @@ class Usuario
 
     public function cambiarPassword($id, $params)
     {
-        $hash = password_hash($params->contrasena, PASSWORD_DEFAULT);
+        // 1. Traer la contraseña actual (hasheada) del usuario
+        $sqlBuscar = "SELECT contraseña FROM usuarios WHERE id_usuario = $id";
+        $resBuscar = mysqli_query($this->conexion, $sqlBuscar);
+        $filaBuscar = mysqli_fetch_array($resBuscar);
+
+        // 2. Verificar que la contraseña actual ingresada coincida con el hash guardado
+        if (!password_verify($params->contrasena_actual, $filaBuscar['contraseña'])) {
+            $vec = [];
+            $vec['resultado'] = "Error";
+            $vec['mensaje'] = "La contraseña actual es incorrecta";
+            return $vec;
+        }
+
+        // 3. Hashear y guardar la nueva contraseña
+        $hash = password_hash($params->contrasena_nueva, PASSWORD_DEFAULT);
 
         $sql = "UPDATE usuarios SET contraseña = '$hash' WHERE id_usuario = $id";
         mysqli_query($this->conexion, $sql) or die('No se pudo cambiar la contraseña');
@@ -105,4 +119,34 @@ class Usuario
 
         return $vec;
     }
+
+    public function recuperarPassword($email, $nuevaContrasena)
+    {
+        // 1. Verificar que el email exista
+        $sqlBuscar = "SELECT id_usuario FROM usuarios WHERE email = '$email'";
+        $resBuscar = mysqli_query($this->conexion, $sqlBuscar);
+        $filaBuscar = mysqli_fetch_array($resBuscar);
+
+        if (!$filaBuscar) {
+            $vec = [];
+            $vec['resultado'] = "Error";
+            $vec['mensaje'] = "No existe un usuario registrado con ese email";
+            return $vec;
+        }
+
+        // 2. Hashear y actualizar la nueva contraseña
+        $hash = password_hash($nuevaContrasena, PASSWORD_DEFAULT);
+        $id = $filaBuscar['id_usuario'];
+
+        $sqlUpdate = "UPDATE usuarios SET contraseña = '$hash' WHERE id_usuario = $id";
+        mysqli_query($this->conexion, $sqlUpdate) or die('No se pudo actualizar la contraseña');
+
+        $vec = [];
+        $vec['resultado'] = "Ok";
+        $vec['mensaje'] = "Contraseña actualizada correctamente";
+
+        return $vec;
+    }
+
+
 }

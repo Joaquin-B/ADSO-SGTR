@@ -52,6 +52,35 @@
 
     </div>
 
+    <div class="card settings-card mb-3">
+        <h5>Seguridad</h5>
+        <p class="settings-desc">Actualice su contraseña de acceso</p>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label>Contraseña Actual</label>
+                <input type="password" class="form-control" placeholder="••••••••" [(ngModel)]="contrasena_actual">
+                <span style="color: red;" *ngIf="validar_contrasena_actual == false">Ingresa tu contraseña actual</span>
+            </div>
+            <div class="col-12 col-sm-6">
+                <label>Nueva Contraseña</label>
+                <input type="password" class="form-control" placeholder="••••••••" [(ngModel)]="contrasena_nueva">
+                <span style="color: red;" *ngIf="validar_contrasena_nueva == false">Ingresa la nueva contraseña</span>
+            </div>
+            <div class="col-12 col-sm-6">
+                <label>Confirmar Contraseña</label>
+                <input type="password" class="form-control" placeholder="••••••••" [(ngModel)]="contrasena_confirmar">
+                <span style="color: red;" *ngIf="validar_contrasena_confirmar == false">Las contraseñas no
+                    coinciden</span>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" (click)="validarCambioPassword()">Actualizar Contraseña</button>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="col-12 col-lg-5">
 
         <div class="card settings-card mb-3">
