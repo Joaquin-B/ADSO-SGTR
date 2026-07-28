@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 })
 export class Marca {
 
- //  url = "http://localhost/sgtr/Backend/controladores/marca.php";
-  url = "http://www.sgtr.com.mialias.net/Backend/controladores/marca.php";
+  url = "http://localhost/sgtr/Backend/controladores/marca.php";
+
   constructor(private http: HttpClient) { };
 
   consulta(){

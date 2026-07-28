@@ -8,8 +8,8 @@ export class Cliente {
 
  
 
-  // url = "http://localhost/sgtr/Backend/controladores/cliente.php";
- url = "http://www.sgtr.com.mialias.net/Backend/controladores/cliente.php";
+   url = "http://localhost/sgtr/Backend/controladores/cliente.php";
+ 
 
   constructor(private http: HttpClient) { };
 

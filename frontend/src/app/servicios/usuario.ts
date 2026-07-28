@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 })
 export class Usuario {
 
- // url = "http://localhost/sgtr/Backend/controladores/usuario.php";
-  url = "http://www.sgtr.com.mialias.net/Backend/controladores/usuario.php";
+  url = "http://localhost/sgtr/Backend/controladores/usuario.php";
+ 
   constructor(private http: HttpClient) { };
 
   consulta() {

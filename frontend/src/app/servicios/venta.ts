@@ -8,8 +8,8 @@ export class Venta {
 
    
 
-  // url = "http://localhost/sgtr/Backend/controladores/venta.php";
-  url = "http://www.sgtr.com.mialias.net/Backend/controladores/venta.php";
+   url = "http://localhost/sgtr/Backend/controladores/venta.php";
+
 
   constructor(private http: HttpClient) { };
 

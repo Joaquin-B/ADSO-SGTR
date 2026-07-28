@@ -7,8 +7,8 @@ import { Injectable } from '@angular/core';
 export class Loginservicio {
 
  
-  // url = "http://localhost/sgtr/Backend/controladores/login.php";
-  url = "http://www.sgtr.com.mialias.net/Backend/controladores/login.php";
+  url = "http://localhost/sgtr/Backend/controladores/login.php";
+
   constructor(private http: HttpClient){};
 
    consulta(email: any, contraseña: any){

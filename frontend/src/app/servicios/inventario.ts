@@ -8,8 +8,8 @@ export class Inventario {
 
   
 
- // url = "http://localhost/sgtr/Backend/controladores/inventario.php";
-   url = "http://www.sgtr.com.mialias.net/Backend/controladores/inventario.php";
+ url = "http://localhost/sgtr/Backend/controladores/inventario.php";
+   
 
   constructor(private http: HttpClient) { };
 

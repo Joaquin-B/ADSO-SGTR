@@ -8,8 +8,8 @@ export class Categoria {
 
   
 
-  //url = "http://localhost/sgtr/Backend/controladores/categoria.php";
-   url = "http://www.sgtr.com.mialias.net/Backend/controladores/categoria.php";
+  url = "http://localhost/sgtr/Backend/controladores/categoria.php";
+ 
   constructor(private http: HttpClient) { };
 
   consulta() {
